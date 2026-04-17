@@ -8,6 +8,7 @@ const rateLimit = require('express-rate-limit');
 const chatRoutes = require('./api/routes/chat');
 const calendarRoutes = require('./api/routes/calendar');
 const cerebroRoutes = require('./api/routes/cerebro');
+const twimlRoutes = require('./api/routes/twiml');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -49,6 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/chat', chatRoutes);
 app.use('/api/calendar', calendarRoutes);
 app.use('/api/cerebro', cerebroRoutes);
+app.use('/api/twiml', twimlRoutes);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

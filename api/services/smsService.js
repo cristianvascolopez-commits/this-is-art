@@ -48,26 +48,13 @@ async function sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono }) 
   // 2. Llamada de voz de confirmación
   if (!process.env.TWILIO_PHONE_NUMBER) return;
 
-  const [h, m]  = hora.split(':');
-  const horaVoz = m === '00' ? `las ${h}` : `las ${h} y ${m}`;
-
-  const twiml = `<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-  <Say voice="alice" language="es-ES">
-Hola ${nombre}, ¿qué tal?
-Te llamamos desde THIS IS ART, tu barbería de confianza en Terrassa.
-Te confirmamos que tu cita está reservada y te esperamos con muchas ganas.
-Tienes el ${fechaFormateada}, a ${horaVoz} en punto.
-El servicio que has elegido es ${servicio}.
-Estamos en el Carrer de Volta, número ochenta y dos, aquí en Terrassa.
-Si necesitas cambiar o cancelar tu cita, llámanos al noventa y tres, ciento ochenta y nueve, cuarenta, setenta y ocho.
-Muchas gracias por confiar en THIS IS ART, ${nombre}. ¡Te esperamos pronto!
-  </Say>
-</Response>`;
+  const base = 'https://this-is-art-app-production.up.railway.app';
+  const params = new URLSearchParams({ nombre, servicio, fecha, hora });
+  const twimlUrl = `${base}/api/twiml/confirmacion?${params.toString()}`;
 
   try {
     const call = await client.calls.create({
-      twiml,
+      url:  twimlUrl,
       from: process.env.TWILIO_PHONE_NUMBER,
       to:   telefonoNorm,
     });
