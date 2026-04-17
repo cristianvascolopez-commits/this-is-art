@@ -24,7 +24,7 @@ app.use(helmet({
       fontSrc: ["'self'", "fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "*.googleapis.com", "*.gstatic.com", "*.google.com", "*.instagram.com", "*.cdninstagram.com"],
       frameSrc: ["'self'", "*.google.com"],
-      connectSrc: ["'self'"],
+      connectSrc: ["'self'", "https://this-is-art-app-production.up.railway.app"],
     },
   },
 }));
