@@ -16,7 +16,8 @@
     "express-rate-limit": "^7.5.0",
     "googleapis": "^144.0.0",
     "helmet": "^8.0.0",
-    "nodemailer": "^8.0.5"
+    "nodemailer": "^8.0.5",
+    "twilio": "^5.13.1"
   },
   "engines": {
     "node": ">=18.0.0"

@@ -2,7 +2,8 @@ const express = require('express');
 const router  = express.Router();
 const { askClaude }          = require('../services/claudeService');
 const { createAppointment, searchAppointments, cancelAppointment, updateAppointment } = require('../services/calendarService');
-const { sendConfirmation }   = require('../services/emailService');
+const { sendConfirmation }    = require('../services/emailService');
+const { sendSmsConfirmation } = require('../services/smsService');
 const { saveMemory, saveConversation, extractMemorizable } = require('../services/cerebroService');
 
 router.post('/', async (req, res) => {
@@ -47,6 +48,14 @@ router.post('/', async (req, res) => {
           telefono:      citaData.telefono || '',
           emailCliente:  citaData.email || '',
         }).catch(err => console.warn('[Email] Error al enviar:', err.message));
+
+        sendSmsConfirmation({
+          nombre:   citaData.nombre,
+          servicio: citaData.servicio,
+          fecha:    citaData.fecha,
+          hora:     citaData.hora,
+          telefono: citaData.telefono || '',
+        }).catch(err => console.warn('[SMS] Error al enviar:', err.message));
 
       } catch (calErr) {
         console.error('[Calendar] Error al crear cita:', calErr.message);
