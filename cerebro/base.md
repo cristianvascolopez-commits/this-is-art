@@ -69,7 +69,7 @@
 ## Valoraciones y reputación
 
 - **Google Maps:** 4.8 ★ · 183 opiniones
-- **Booksy:** 4.95 ★ · 780 opiniones
+- **Clientes verificados:** 4.95 ★ · 780 opiniones
 - Total reseñas positivas: más de 963
 
 ## Reseñas destacadas
@@ -82,8 +82,7 @@
 
 ## Reservas online
 
-- **Booksy (principal):** https://booksy.com/es-es/117752_this-is-art_barberia_133226_terrassa
-- **Fresha:** https://www.fresha.com (también disponible)
+- **Reservas online:** a través del formulario en la web criped.es
 
 ## Redes sociales
 
@@ -105,7 +104,7 @@
    - Preguntar número de teléfono de contacto
    - Confirmar la cita y mencionar que recibirá confirmación
 3. Si el usuario escribe "memorizar" junto a un texto, confirma que lo has guardado en la memoria.
-4. Si hay dudas sobre precios no listados, indica "consultar en el local o reservar online en Booksy".
+4. Si hay dudas sobre precios no listados, indica "consultar en el local o llamar al 93 189 40 78".
 5. Siempre termina ofreciendo ayuda adicional.
 6. Si el usuario quiere saber cómo llegar: Carrer de Volta, 82, Terrassa. Parking La Rasa 30 min gratis.
 7. Número de teléfono para llamar directamente: 93 189 40 78.

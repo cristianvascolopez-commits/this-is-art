@@ -47,6 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target === e.currentTarget) closeBooking();
   });
 
+  document.getElementById('bEmailToggle')?.addEventListener('change', e => {
+    const field = document.getElementById('bEmailField');
+    if (field) field.style.display = e.target.checked ? 'flex' : 'none';
+  });
+
   document.getElementById('bookingForm')?.addEventListener('submit', async e => {
     e.preventDefault();
     const btn = document.getElementById('bookingSubmit');
