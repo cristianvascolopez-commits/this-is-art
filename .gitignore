@@ -5,3 +5,4 @@ cerebro/historial/*.json
 .DS_Store
 Thumbs.db
 auth-setup.js
+modificador web/

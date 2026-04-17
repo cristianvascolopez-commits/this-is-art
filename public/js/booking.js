@@ -36,6 +36,11 @@ const Booking = (() => {
       fechaInput.value = today;
     }
 
+    // Auto-relleno con datos guardados
+    const saved = JSON.parse(localStorage.getItem('tia_cliente') || '{}');
+    if (saved.nombre)   { const el = document.getElementById('bNombre');   if (el) el.value = saved.nombre; }
+    if (saved.telefono) { const el = document.getElementById('bTelefono'); if (el) el.value = saved.telefono; }
+
     document.getElementById('bookingOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
   }
@@ -175,6 +180,8 @@ const Booking = (() => {
       const data = await res.json();
 
       if (res.ok && data.success) {
+        // Guardar datos del cliente para próximas reservas
+        localStorage.setItem('tia_cliente', JSON.stringify({ nombre: state.nombre, telefono: state.telefono }));
         document.getElementById('bookingSuccessText').textContent =
           `${state.nombre}, te esperamos el ${formatDate(state.fecha)} a las ${state.hora} para ${state.servicio} con ${state.empleado}. ¡Hasta pronto!`;
         renderStep(0);
