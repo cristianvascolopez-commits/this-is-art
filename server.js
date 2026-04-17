@@ -12,6 +12,9 @@ const cerebroRoutes = require('./api/routes/cerebro');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Necesario en Railway (detrás de proxy)
+app.set('trust proxy', 1);
+
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {

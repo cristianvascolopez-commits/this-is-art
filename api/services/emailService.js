@@ -2,16 +2,22 @@ const nodemailer = require('nodemailer');
 
 function getTransporter() {
   return nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_APP_PASSWORD,
     },
+    tls: { rejectUnauthorized: false },
   });
 }
 
 async function sendConfirmation({ nombre, servicio, fecha, hora, telefono, emailCliente }) {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) return;
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
+    console.warn('[Email] Variables EMAIL_USER o EMAIL_APP_PASSWORD no configuradas');
+    return;
+  }
 
   const transporter = getTransporter();
 
@@ -137,7 +143,14 @@ async function sendConfirmation({ nombre, servicio, fecha, hora, telefono, email
     }));
   }
 
-  await Promise.allSettled(promises);
+  const results = await Promise.allSettled(promises);
+  results.forEach((r, i) => {
+    if (r.status === 'fulfilled') {
+      console.log(`[Email] Enviado OK (${i === 0 ? 'barbería' : 'cliente'}):`, r.value.messageId);
+    } else {
+      console.error(`[Email] Error (${i === 0 ? 'barbería' : 'cliente'}):`, r.reason?.message);
+    }
+  });
 }
 
 module.exports = { sendConfirmation };
