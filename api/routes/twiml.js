@@ -16,7 +16,7 @@ router.get('/confirmacion', (req, res) => {
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Say voice="Polly.Lucia">
+  <Say voice="Polly.Conchita">
     Hola ${nombre}, qué tal.
     Te llamamos desde THIS IS ART, tu barbería de confianza en Terrassa.
     Te confirmamos que tu cita está reservada y te esperamos con muchas ganas.
