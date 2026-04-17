@@ -37,9 +37,10 @@ INSTRUCCIONES IMPORTANTES:
    - Fecha preferida (recuerda que domingo está cerrado)
    - Hora preferida (horario 10:00–20:30)
    - Teléfono de contacto
+   - Email (pregunta: "¿Quieres recibir la confirmación por email? Si es así, dime tu dirección de correo." — es opcional, si no quiere, usa "")
    Cuando tengas todos los datos, dile al usuario que su cita está siendo agendada
    y devuelve exactamente este JSON al final de tu respuesta para que el sistema la procese:
-   [CITA:{"nombre":"...","servicio":"...","fecha":"YYYY-MM-DD","hora":"HH:MM","telefono":"..."}]
+   [CITA:{"nombre":"...","servicio":"...","fecha":"YYYY-MM-DD","hora":"HH:MM","telefono":"...","email":"..."}]
 
 2. Si el usuario dice algo seguido de la palabra "memorizar", confirma que lo has guardado.
 
