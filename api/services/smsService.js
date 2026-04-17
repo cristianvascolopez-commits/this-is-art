@@ -1,4 +1,8 @@
-const https = require('https');
+const twilio = require('twilio');
+
+function getClient() {
+  return twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+}
 
 function normalizarTelefono(telefono) {
   let t = telefono.replace(/\s/g, '');
@@ -7,73 +11,62 @@ function normalizarTelefono(telefono) {
 }
 
 async function sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono }) {
-  if (!process.env.BREVO_API_KEY) {
-    console.warn('[SMS] BREVO_API_KEY no configurada');
+  if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN || !process.env.TWILIO_PHONE_NUMBER) {
+    console.warn('[Twilio] Variables no configuradas');
     return;
   }
 
   if (!telefono) {
-    console.warn('[SMS] No hay teléfono del cliente');
+    console.warn('[Twilio] No hay teléfono del cliente');
     return;
   }
 
+  const client       = getClient();
   const telefonoNorm = normalizarTelefono(telefono);
 
   const fechaFormateada = new Date(fecha + 'T12:00:00')
     .toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
-  const mensaje =
-`THIS IS ART - Reserva confirmada
+  // SMS de confirmación
+  const mensajeSms =
+`✂️ THIS IS ART — Reserva confirmada
 
-Hola ${nombre}, muchas gracias por elegirnos!
+Hola ${nombre}, ¡muchas gracias por elegirnos! 🙏
 
 Tu cita:
-- ${fechaFormateada}
-- ${hora}h
-- ${servicio}
-- C/ Volta 82, Terrassa
+📅 ${fechaFormateada}
+🕐 ${hora}h
+💈 ${servicio}
+📍 C/ Volta 82, Terrassa
 
 Para cambios llama al 93 189 40 78.
-Hasta pronto! - El equipo de THIS IS ART`;
+¡Hasta pronto! — El equipo de THIS IS ART`;
 
-  const payload = JSON.stringify({
-    sender:    'THISISART',
-    recipient: telefonoNorm,
-    content:   mensaje,
-    type:      'transactional',
-  });
-
-  const options = {
-    hostname: 'api.brevo.com',
-    path:     '/v3/transactionalSMS/sms',
-    method:   'POST',
-    headers: {
-      'api-key':      process.env.BREVO_API_KEY,
-      'Content-Type': 'application/json',
-      'Content-Length': Buffer.byteLength(payload),
-    },
-  };
-
-  return new Promise((resolve) => {
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          console.log('[SMS Brevo] Enviado OK →', telefonoNorm);
-        } else {
-          console.error('[SMS Brevo] Error', res.statusCode, data);
-        }
-        resolve();
-      });
+  try {
+    const msg = await client.messages.create({
+      body: mensajeSms,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to:   telefonoNorm,
     });
-    req.on('error', err => {
-      console.error('[SMS Brevo] Error de red:', err.message);
-      resolve();
+    console.log('[SMS] Enviado OK — SID:', msg.sid, '→', telefonoNorm);
+  } catch (err) {
+    console.error('[SMS] Error:', err.message);
+  }
+
+  // Llamada de voz en español via endpoint TwiML
+  const params   = new URLSearchParams({ nombre, servicio, fecha, hora });
+  const twimlUrl = `https://this-is-art-app-production.up.railway.app/api/twiml/confirmacion?${params}`;
+
+  try {
+    const call = await client.calls.create({
+      url:  twimlUrl,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to:   telefonoNorm,
     });
-    req.write(payload);
-    req.end();
-  });
+    console.log('[Llamada] Iniciada OK — SID:', call.sid, '→', telefonoNorm);
+  } catch (err) {
+    console.error('[Llamada] Error:', err.message);
+  }
 }
 
 module.exports = { sendSmsConfirmation };
