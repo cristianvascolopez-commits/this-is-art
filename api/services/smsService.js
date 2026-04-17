@@ -6,12 +6,12 @@ function getClient() {
 
 async function sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono }) {
   if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN || !process.env.TWILIO_PHONE_NUMBER) {
-    console.warn('[SMS] Variables TWILIO no configuradas');
+    console.warn('[Llamada] Variables TWILIO no configuradas');
     return;
   }
 
   if (!telefono) {
-    console.warn('[SMS] No hay teléfono del cliente');
+    console.warn('[Llamada] No hay teléfono del cliente');
     return;
   }
 
@@ -20,48 +20,38 @@ async function sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono }) 
   const fechaFormateada = new Date(fecha + 'T12:00:00')
     .toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
-  // Normalizar teléfono español → añadir +34 si no tiene prefijo
+  // Normalizar teléfono español
   let telefonoNorm = telefono.replace(/\s/g, '');
   if (!telefonoNorm.startsWith('+')) {
     telefonoNorm = '+34' + telefonoNorm;
   }
 
-  const mensajeCliente = `✂ THIS IS ART\n¡Hola ${nombre}! Tu cita está confirmada:\n📅 ${fechaFormateada}\n🕐 ${hora}\n💈 ${servicio}\n📍 Carrer de Volta, 82 · Terrassa\n📞 93 189 40 78`;
+  // Mensaje de voz en español
+  const mensaje = `
+    <Response>
+      <Say language="es-ES" voice="Polly.Conchita">
+        Hola ${nombre}, te llamamos de THIS IS ART, barbería en Terrassa.
+        Tu cita ha quedado confirmada.
+        Servicio: ${servicio}.
+        Fecha: ${fechaFormateada}.
+        Hora: ${hora.replace(':', ' y ')}.
+        Nos encontramos en Carrer de Volta, ochenta y dos, Terrassa.
+        Para cambiar o cancelar tu cita llámanos al noventa y tres, ciento ochenta y nueve, cuarenta, setenta y ocho.
+        ¡Hasta pronto!
+      </Say>
+    </Response>
+  `.trim();
 
-  const mensajeBarberia = `✂ Nueva cita:\nCliente: ${nombre}\nServicio: ${servicio}\nFecha: ${fechaFormateada}\nHora: ${hora}\nTel: ${telefono}`;
-
-  const promises = [];
-
-  // SMS al cliente
-  promises.push(
-    client.messages.create({
-      body: mensajeCliente,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to:   telefonoNorm,
-    })
-  );
-
-  // SMS a la barbería
-  if (process.env.BUSINESS_PHONE_SMS) {
-    let telBarberia = process.env.BUSINESS_PHONE_SMS.replace(/\s/g, '');
-    if (!telBarberia.startsWith('+')) telBarberia = '+34' + telBarberia;
-    promises.push(
-      client.messages.create({
-        body: mensajeBarberia,
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to:   telBarberia,
-      })
-    );
+  try {
+    const call = await client.calls.create({
+      twiml: mensaje,
+      from:  process.env.TWILIO_PHONE_NUMBER,
+      to:    telefonoNorm,
+    });
+    console.log('[Llamada] Iniciada OK — SID:', call.sid, '→', telefonoNorm);
+  } catch (err) {
+    console.error('[Llamada] Error:', err.message);
   }
-
-  const results = await Promise.allSettled(promises);
-  results.forEach((r, i) => {
-    if (r.status === 'fulfilled') {
-      console.log(`[SMS] Enviado OK (${i === 0 ? 'cliente' : 'barbería'}): SID ${r.value.sid}`);
-    } else {
-      console.error(`[SMS] Error (${i === 0 ? 'cliente' : 'barbería'}):`, r.reason?.message);
-    }
-  });
 }
 
 module.exports = { sendSmsConfirmation };
