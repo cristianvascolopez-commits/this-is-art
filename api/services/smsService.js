@@ -4,6 +4,10 @@ function getClient() {
   return twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 }
 
+function sinAcentos(str) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
 function normalizarTelefono(telefono) {
   let t = telefono.replace(/\s/g, '');
   if (!t.startsWith('+')) t = '+34' + t;
@@ -57,7 +61,7 @@ Para cambios llama al 93 189 40 78.
   const [h, m]  = hora.split(':');
   const horaVoz = m === '00' ? `las ${h}` : `las ${h} y ${m}`;
 
-  const twiml = `<Response><Say voice="alice" language="es-ES">Hola ${nombre}. Te llamamos desde THIS IS ART, tu barberia de confianza en Terrassa. Tu cita esta confirmada para el ${fechaFormateada}, a ${horaVoz}. El servicio elegido es ${servicio}. Estamos en el Carrer de Volta, ochenta y dos. Si necesitas cambiar la cita llamanos al noventa y tres, ciento ochenta y nueve, cuarenta, setenta y ocho. Muchas gracias ${nombre}. Hasta pronto.</Say></Response>`;
+  const twiml = `<Response><Say voice="alice" language="es-ES">Hola ${sinAcentos(nombre)}. Te llamamos desde THIS IS ART, tu barberia de confianza en Terrassa. Tu cita esta confirmada para el ${sinAcentos(fechaFormateada)}, a ${horaVoz}. El servicio elegido es ${sinAcentos(servicio)}. Estamos en el Carrer de Volta, ochenta y dos. Si necesitas cambiar la cita llamanos al noventa y tres, ciento ochenta y nueve, cuarenta, setenta y ocho. Muchas gracias ${sinAcentos(nombre)}. Hasta pronto.</Say></Response>`;
 
   try {
     const call = await client.calls.create({
