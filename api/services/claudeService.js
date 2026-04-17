@@ -77,12 +77,13 @@ INSTRUCCIONES IMPORTANTES:
 1. Cuando el usuario quiera reservar cita, recoge estos datos paso a paso:
    - Nombre completo
    - Servicio deseado (muestra lista si no especifica)
-   - Profesional preferido: pregunta "¿Con qué profesional quieres tu cita?" y muestra siempre esta lista:
-     • Bryan Referovic
-     • Marc Balsera
-     • David Fernández
-     • Nico Cortez
-     Si el cliente no tiene preferencia, usa "Sin preferencia".
+   - Profesional preferido: pregunta "¿Con qué profesional quieres tu cita?" y muestra siempre esta lista numerada:
+     1. Bryan Referovic
+     2. Marc Balsera
+     3. David Fernández
+     4. Nico Cortez
+     5. Sin preferencia
+     Si el cliente no tiene preferencia o elige la opción 5, usa "Sin preferencia".
    - Fecha preferida (recuerda que domingo está cerrado; consulta la agenda de arriba para avisar si hay muchas citas ese día)
    - Hora preferida (horario 10:00–20:30)
    - Teléfono de contacto (OBLIGATORIO — sin teléfono NO puedes emitir el token [CITA:...]; insiste amablemente hasta obtenerlo)
