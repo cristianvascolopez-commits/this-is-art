@@ -1,8 +1,4 @@
-const twilio = require('twilio');
-
-function getClient() {
-  return twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-}
+const https = require('https');
 
 function normalizarTelefono(telefono) {
   let t = telefono.replace(/\s/g, '');
@@ -11,8 +7,8 @@ function normalizarTelefono(telefono) {
 }
 
 async function sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono }) {
-  if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
-    console.warn('[SMS] Variables Twilio no configuradas');
+  if (!process.env.BREVO_API_KEY) {
+    console.warn('[SMS] BREVO_API_KEY no configurada');
     return;
   }
 
@@ -21,42 +17,63 @@ async function sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono }) 
     return;
   }
 
-  const client = getClient();
   const telefonoNorm = normalizarTelefono(telefono);
 
   const fechaFormateada = new Date(fecha + 'T12:00:00')
     .toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
   const mensaje =
-`✂️ THIS IS ART — Reserva confirmada
+`THIS IS ART - Reserva confirmada
 
-Hola ${nombre}, ¡muchas gracias por elegirnos! 🙏
+Hola ${nombre}, muchas gracias por elegirnos!
 
-Tu cita ha quedado registrada:
-📅 ${fechaFormateada}
-🕐 ${hora}h
-💈 ${servicio}
-📍 C/ Volta 82, Terrassa
+Tu cita:
+- ${fechaFormateada}
+- ${hora}h
+- ${servicio}
+- C/ Volta 82, Terrassa
 
-Te esperamos con ganas. Si necesitas cambiar o cancelar, llámanos al 93 189 40 78.
+Para cambios llama al 93 189 40 78.
+Hasta pronto! - El equipo de THIS IS ART`;
 
-¡Hasta pronto! 👋
-— El equipo de THIS IS ART`;
+  const payload = JSON.stringify({
+    sender:    'THISISART',
+    recipient: telefonoNorm,
+    content:   mensaje,
+    type:      'transactional',
+  });
 
-  try {
-    const smsOpts = process.env.TWILIO_MESSAGING_SID
-      ? { messagingServiceSid: process.env.TWILIO_MESSAGING_SID }
-      : { from: process.env.TWILIO_PHONE_NUMBER };
+  const options = {
+    hostname: 'api.brevo.com',
+    path:     '/v3/transactionalSMS/sms',
+    method:   'POST',
+    headers: {
+      'api-key':      process.env.BREVO_API_KEY,
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(payload),
+    },
+  };
 
-    const msg = await client.messages.create({
-      body: mensaje,
-      to:   telefonoNorm,
-      ...smsOpts,
+  return new Promise((resolve) => {
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          console.log('[SMS Brevo] Enviado OK →', telefonoNorm);
+        } else {
+          console.error('[SMS Brevo] Error', res.statusCode, data);
+        }
+        resolve();
+      });
     });
-    console.log('[SMS] Enviado OK — SID:', msg.sid, '→', telefonoNorm);
-  } catch (err) {
-    console.error('[SMS] Error:', err.message);
-  }
+    req.on('error', err => {
+      console.error('[SMS Brevo] Error de red:', err.message);
+      resolve();
+    });
+    req.write(payload);
+    req.end();
+  });
 }
 
 module.exports = { sendSmsConfirmation };
