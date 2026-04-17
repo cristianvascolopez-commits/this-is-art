@@ -115,3 +115,118 @@ function formatDate(dateStr) {
   const d = new Date(dateStr + 'T12:00:00');
   return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
 }
+
+// ── Pestañas ──────────────────────────────────────────────────────────────────
+function switchBookingTab(tab) {
+  const esNueva = tab === 'nueva';
+  document.getElementById('panelNueva').style.display      = esNueva ? 'block' : 'none';
+  document.getElementById('panelGestionar').style.display  = esNueva ? 'none'  : 'block';
+  document.getElementById('gModificarPanel').style.display = 'none';
+  document.getElementById('tabNueva').classList.toggle('active', esNueva);
+  document.getElementById('tabGestionar').classList.toggle('active', !esNueva);
+  document.getElementById('bookingTitle').textContent = esNueva ? 'Reservar cita' : 'Gestionar cita';
+}
+
+// ── Buscar citas ──────────────────────────────────────────────────────────────
+const API = 'https://this-is-art-app-production.up.railway.app';
+
+async function buscarCitas() {
+  const q   = document.getElementById('gBuscar').value.trim();
+  const res = document.getElementById('gResultados');
+  if (!q) { res.innerHTML = '<p style="color:#f87171;font-size:0.82rem;">Escribe un nombre o teléfono.</p>'; return; }
+
+  res.innerHTML = '<p style="color:var(--color-text-muted);font-size:0.82rem;">Buscando...</p>';
+  document.getElementById('gModificarPanel').style.display = 'none';
+
+  try {
+    const r    = await fetch(`${API}/api/calendar/search?q=${encodeURIComponent(q)}`);
+    const data = await r.json();
+
+    if (!data.events || data.events.length === 0) {
+      res.innerHTML = '<p style="color:var(--color-text-muted);font-size:0.85rem;margin-top:0.5rem;">No se encontraron citas próximas con esos datos.</p>';
+      return;
+    }
+
+    res.innerHTML = data.events.map(e => {
+      const dt  = new Date(e.start);
+      const dia = dt.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Madrid' });
+      const hr  = dt.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Madrid' });
+      const svc = e.summary.replace('✂ THIS IS ART — ', '');
+      return `
+        <div class="gcita-card">
+          <div class="gcita-info">
+            <strong>${svc}</strong>
+            <span>${dia} · ${hr}</span>
+          </div>
+          <div class="gcita-actions">
+            <button onclick="iniciarModificar('${e.id}')" class="gcita-btn gcita-btn-mod">✏️ Cambiar</button>
+            <button onclick="cancelarCita('${e.id}', this)" class="gcita-btn gcita-btn-del">✕ Cancelar</button>
+          </div>
+        </div>`;
+    }).join('');
+  } catch {
+    res.innerHTML = '<p style="color:#f87171;font-size:0.82rem;">Error al buscar. Inténtalo de nuevo.</p>';
+  }
+}
+
+// ── Cancelar cita ─────────────────────────────────────────────────────────────
+async function cancelarCita(eventId, btn) {
+  if (!confirm('¿Confirmas que quieres cancelar esta cita?')) return;
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    const r = await fetch(`${API}/api/calendar/cancel/${eventId}`, { method: 'DELETE' });
+    if (r.ok) {
+      btn.closest('.gcita-card').innerHTML = '<p style="color:#4ade80;font-size:0.82rem;padding:0.6rem 0;">✅ Cita cancelada correctamente.</p>';
+    } else {
+      btn.textContent = 'Error';
+    }
+  } catch {
+    btn.textContent = 'Error';
+  }
+}
+
+// ── Modificar cita ────────────────────────────────────────────────────────────
+function iniciarModificar(eventId) {
+  document.getElementById('gModEventId').value = eventId;
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('gModFecha').min   = today;
+  document.getElementById('gModFecha').value = '';
+  document.getElementById('gModHora').value  = '';
+  document.getElementById('gModMsg').textContent = '';
+  document.getElementById('gModificarPanel').style.display = 'block';
+  document.getElementById('gModificarPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+async function confirmarModificar() {
+  const eventId = document.getElementById('gModEventId').value;
+  const fecha   = document.getElementById('gModFecha').value;
+  const hora    = document.getElementById('gModHora').value;
+  const msgEl   = document.getElementById('gModMsg');
+
+  if (!fecha || !hora) { msgEl.style.color = '#f87171'; msgEl.textContent = 'Selecciona fecha y hora.'; return; }
+  if (new Date(fecha).getDay() === 0) { msgEl.style.color = '#f87171'; msgEl.textContent = 'Los domingos estamos cerrados.'; return; }
+
+  msgEl.style.color = 'var(--color-text-muted)';
+  msgEl.textContent = 'Actualizando...';
+
+  try {
+    const r = await fetch(`${API}/api/calendar/update/${eventId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fecha, hora }),
+    });
+    if (r.ok) {
+      msgEl.style.color = '#4ade80';
+      msgEl.textContent = `✅ Cita cambiada al ${formatDate(fecha)} a las ${hora}.`;
+      document.getElementById('gResultados').innerHTML = '';
+      document.getElementById('gBuscar').value = '';
+    } else {
+      msgEl.style.color = '#f87171';
+      msgEl.textContent = 'Error al actualizar. Llámanos al 93 189 40 78.';
+    }
+  } catch {
+    msgEl.style.color = '#f87171';
+    msgEl.textContent = 'Sin conexión. Llámanos al 93 189 40 78.';
+  }
+}

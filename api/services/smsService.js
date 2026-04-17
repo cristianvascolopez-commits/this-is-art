@@ -26,36 +26,24 @@ async function sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono }) 
     telefonoNorm = '+34' + telefonoNorm;
   }
 
-  const [h, m]   = hora.split(':');
-  const horaVoz  = m === '00' ? `las ${h}` : `las ${h} y ${m}`;
+  const [h, m]  = hora.split(':');
+  const horaVoz = m === '00' ? `las ${h}` : `las ${h} y ${m}`;
 
-  // Mensaje de voz en español
-  const mensaje = `
-    <Response>
-      <Say language="es-ES" voice="Polly.Conchita">
-        <prosody rate="95%">
-          Hola ${nombre}, ¿qué tal?
-          <break time="400ms"/>
-          Te llamamos desde THIS IS ART, tu barbería de confianza en Terrassa.
-          <break time="500ms"/>
-          Te confirmamos que tu cita está reservada y te esperamos con muchas ganas.
-          <break time="400ms"/>
-          Tienes el ${fechaFormateada}, a ${horaVoz} en punto.
-          El servicio que has elegido es ${servicio}.
-          <break time="500ms"/>
-          Nos encontramos en el Carrer de Volta, número ochenta y dos, aquí en Terrassa.
-          Si necesitas aparcamiento, el parking La Rasa está a pocos metros y tienes treinta minutos gratis.
-          <break time="500ms"/>
-          Si por cualquier motivo necesitas cambiar o cancelar tu cita, llámanos al
-          noventa y tres, ciento ochenta y nueve, cuarenta, setenta y ocho,
-          y lo gestionamos encantados.
-          <break time="400ms"/>
-          Muchas gracias por confiar en THIS IS ART, ${nombre}.
-          ¡Te esperamos pronto!
-        </prosody>
-      </Say>
-    </Response>
-  `.trim();
+  // Mensaje de voz — Google Neural en español de España (más natural)
+  const mensaje = `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say language="es-ES" voice="Google.es-ES-Neural2-A">
+Hola ${nombre}, ¿qué tal?
+Te llamamos desde THIS IS ART, tu barbería de confianza en Terrassa.
+Te confirmamos que tu cita está reservada y te esperamos con muchas ganas.
+Tienes el ${fechaFormateada}, a ${horaVoz} en punto.
+El servicio que has elegido es ${servicio}.
+Estamos en el Carrer de Volta, número ochenta y dos, aquí en Terrassa.
+Si necesitas aparcamiento, el parking La Rasa está a pocos metros y tienes treinta minutos gratis.
+Si por cualquier motivo necesitas cambiar o cancelar tu cita, llámanos al noventa y tres, ciento ochenta y nueve, cuarenta, setenta y ocho, y lo gestionamos encantados.
+Muchas gracias por confiar en THIS IS ART, ${nombre}. ¡Te esperamos pronto!
+  </Say>
+</Response>`;
 
   try {
     const call = await client.calls.create({

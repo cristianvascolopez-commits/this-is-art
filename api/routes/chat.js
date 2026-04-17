@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
       try {
         const citaData = JSON.parse(citaMatch[1]);
         calendarResult = await createAppointment(citaData);
-        console.log('[Calendar] Cita creada:', calendarResult?.id);
+        console.log('[Calendar] Cita creada:', calendarResult?.id, '| telefono:', citaData.telefono || '(vacío)');
 
         // Enviar email de confirmación si se proporcionó
         sendConfirmation({
