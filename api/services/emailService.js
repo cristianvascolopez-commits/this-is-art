@@ -1,15 +1,22 @@
 const nodemailer = require('nodemailer');
+const dns = require('dns');
+
+// Railway resuelve smtp.gmail.com a IPv6 por defecto → forzar IPv4
+dns.setDefaultResultOrder('ipv4first');
 
 function getTransporter() {
   return nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
+    port: 587,
+    secure: false,
+    requireTLS: true,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_APP_PASSWORD,
     },
-    tls: { rejectUnauthorized: false },
+    tls: { rejectUnauthorized: false, minVersion: 'TLSv1.2' },
+    connectionTimeout: 15000,
+    socketTimeout: 15000,
   });
 }
 
