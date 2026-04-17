@@ -1,10 +1,11 @@
 const express = require('express');
 const router  = express.Router();
 const { createAppointment, getAvailableSlots } = require('../services/calendarService');
+const { sendConfirmation } = require('../services/emailService');
 
 /* POST /api/calendar/create — Crear una cita manualmente */
 router.post('/create', async (req, res) => {
-  const { nombre, servicio, fecha, hora, telefono } = req.body;
+  const { nombre, servicio, fecha, hora, telefono, email } = req.body;
 
   if (!nombre || !servicio || !fecha || !hora) {
     return res.status(400).json({
@@ -20,6 +21,11 @@ router.post('/create', async (req, res) => {
 
   try {
     const event = await createAppointment({ nombre, servicio, fecha, hora, telefono: telefono || '' });
+
+    // Enviar email de confirmación (sin bloquear la respuesta)
+    sendConfirmation({ nombre, servicio, fecha, hora, telefono, emailCliente: email || '' })
+      .catch(err => console.warn('[Email] No se pudo enviar:', err.message));
+
     return res.json({
       success: true,
       eventId: event.id,

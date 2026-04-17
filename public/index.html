@@ -578,6 +578,7 @@
         <div class="bk-dot" data-step="5"></div>
         <div class="bk-dot" data-step="6"></div>
         <div class="bk-dot" data-step="7"></div>
+        <div class="bk-dot" data-step="8"></div>
       </div>
 
       <!-- ── PASO 1: Servicio ── -->
@@ -731,8 +732,19 @@
         </div>
       </div>
 
-      <!-- ── PASO 7: Confirmación ── -->
+      <!-- ── PASO 7: Email ── -->
       <div class="bk-body" id="bkPanel7" style="display:none">
+        <p class="bk-question">¿Tu email?</p>
+        <p class="bk-hint">Opcional · Te enviamos la confirmación</p>
+        <input type="email" class="bk-input" id="bEmail" placeholder="tucorreo@email.com" maxlength="120" autocomplete="email">
+        <div class="bk-nav">
+          <button class="bk-btn-back" id="bkBack7">← Volver</button>
+          <button class="bk-btn-next" id="bkNext7">Ver resumen →</button>
+        </div>
+      </div>
+
+      <!-- ── PASO 8: Confirmación ── -->
+      <div class="bk-body" id="bkPanel8" style="display:none">
         <p class="bk-question">Confirma tu cita</p>
         <p class="bk-hint">Revisa los datos antes de confirmar</p>
         <div class="bk-summary">
@@ -742,10 +754,11 @@
           <div class="bk-sum-row"><span class="lbl">Hora</span>        <span class="val" id="sumHora">—</span></div>
           <div class="bk-sum-row"><span class="lbl">Nombre</span>      <span class="val" id="sumNombre">—</span></div>
           <div class="bk-sum-row"><span class="lbl">Teléfono</span>    <span class="val" id="sumTelefono">—</span></div>
+          <div class="bk-sum-row"><span class="lbl">Email</span>        <span class="val" id="sumEmail">—</span></div>
         </div>
         <div class="bk-msg" id="bookingMsg"></div>
         <div class="bk-nav">
-          <button class="bk-btn-back" id="bkBack7">← Volver</button>
+          <button class="bk-btn-back" id="bkBack8">← Volver</button>
           <button class="bk-btn-next" id="bookingSubmit">📅 Confirmar cita</button>
         </div>
       </div>

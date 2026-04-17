@@ -1,6 +1,6 @@
 /* =====================
    THIS IS ART — booking.js
-   Reserva paso a paso (7 pasos)
+   Reserva paso a paso (8 pasos)
    ===================== */
 
 const Booking = (() => {
@@ -9,17 +9,16 @@ const Booking = (() => {
     servicio: '', precio: '',
     empleado: '',
     fecha: '', hora: '',
-    nombre: '', telefono: '',
+    nombre: '', telefono: '', email: '',
   };
 
-  const TOTAL_STEPS = 7;
+  const TOTAL_STEPS = 8;
 
   // ── Abrir / cerrar ──────────────────────────────
   function open(servicioPreseleccionado) {
     reset();
     showPanel(1);
 
-    // Fecha mínima = hoy
     const today = new Date().toISOString().split('T')[0];
     const fi = document.getElementById('bFecha');
     if (fi) { fi.min = today; fi.value = today; }
@@ -28,13 +27,11 @@ const Booking = (() => {
     const saved = JSON.parse(localStorage.getItem('tia_cliente') || '{}');
     if (saved.nombre)   { const el = document.getElementById('bNombre');   if (el) el.value = saved.nombre; }
     if (saved.telefono) { const el = document.getElementById('bTelefono'); if (el) el.value = saved.telefono; }
+    if (saved.email)    { const el = document.getElementById('bEmail');    if (el) el.value = saved.email; }
 
-    // Preseleccionar servicio si viene de una tarjeta de servicio
     if (servicioPreseleccionado) {
       document.querySelectorAll('.bk-svc').forEach(c => {
-        if (c.dataset.value.toLowerCase().includes(servicioPreseleccionado.toLowerCase())) {
-          selectSvc(c);
-        }
+        if (c.dataset.value.toLowerCase().includes(servicioPreseleccionado.toLowerCase())) selectSvc(c);
       });
     }
 
@@ -48,7 +45,7 @@ const Booking = (() => {
   }
 
   function reset() {
-    Object.assign(state, { step:1, servicio:'', precio:'', empleado:'', fecha:'', hora:'', nombre:'', telefono:'' });
+    Object.assign(state, { step:1, servicio:'', precio:'', empleado:'', fecha:'', hora:'', nombre:'', telefono:'', email:'' });
     document.querySelectorAll('.bk-svc, .bk-emp, .bk-slot').forEach(el => el.classList.remove('selected'));
     const msg = document.getElementById('bookingMsg');
     if (msg) { msg.textContent = ''; msg.className = 'bk-msg'; }
@@ -64,7 +61,6 @@ const Booking = (() => {
     }
     document.getElementById('bookingSuccess').classList.remove('active');
 
-    // Dots
     document.querySelectorAll('.bk-dot').forEach(d => {
       const s = parseInt(d.dataset.step);
       d.classList.remove('active', 'done');
@@ -108,34 +104,34 @@ const Booking = (() => {
   // ── Validación y avance ─────────────────────────
   function next(from) {
     if (from === 1) {
-      if (!state.servicio) return warn('Por favor selecciona un servicio.');
+      if (!state.servicio) return alert('Por favor selecciona un servicio.');
       showPanel(2);
     } else if (from === 2) {
-      if (!state.empleado) return warn('Por favor elige un profesional.');
+      if (!state.empleado) return alert('Por favor elige un profesional.');
       showPanel(3);
     } else if (from === 3) {
       const fi = document.getElementById('bFecha');
       state.fecha = fi?.value || '';
-      if (!state.fecha) return warn('Por favor selecciona una fecha.');
-      const day = new Date(state.fecha).getDay();
-      if (day === 0) return warn('Los domingos estamos cerrados. Elige otro día.');
+      if (!state.fecha) return alert('Por favor selecciona una fecha.');
+      if (new Date(state.fecha).getDay() === 0) return alert('Los domingos estamos cerrados. Elige otro día.');
       showPanel(4);
     } else if (from === 4) {
-      if (!state.hora) return warn('Por favor selecciona una hora.');
+      if (!state.hora) return alert('Por favor selecciona una hora.');
       showPanel(5);
     } else if (from === 5) {
       state.nombre = document.getElementById('bNombre')?.value.trim() || '';
-      if (!state.nombre) return warn('Por favor introduce tu nombre.');
+      if (!state.nombre) return alert('Por favor introduce tu nombre.');
       showPanel(6);
     } else if (from === 6) {
       state.telefono = document.getElementById('bTelefono')?.value.trim() || '';
-      if (!state.telefono) return warn('Por favor introduce tu teléfono.');
-      fillSummary();
+      if (!state.telefono) return alert('Por favor introduce tu teléfono.');
       showPanel(7);
+    } else if (from === 7) {
+      state.email = document.getElementById('bEmail')?.value.trim() || '';
+      fillSummary();
+      showPanel(8);
     }
   }
-
-  function warn(msg) { alert(msg); }
 
   // ── Resumen ────────────────────────────────────
   function fillSummary() {
@@ -146,6 +142,8 @@ const Booking = (() => {
     document.getElementById('sumHora').textContent      = state.hora;
     document.getElementById('sumNombre').textContent    = state.nombre;
     document.getElementById('sumTelefono').textContent  = state.telefono;
+    const sumEmail = document.getElementById('sumEmail');
+    if (sumEmail) sumEmail.textContent = state.email || '—';
   }
 
   // ── Envío ──────────────────────────────────────
@@ -172,15 +170,16 @@ const Booking = (() => {
           fecha:    state.fecha,
           hora:     state.hora,
           telefono: state.telefono,
+          email:    state.email,
         }),
       });
 
       const data = await res.json();
 
       if (res.ok && data.success) {
-        localStorage.setItem('tia_cliente', JSON.stringify({ nombre: state.nombre, telefono: state.telefono }));
+        localStorage.setItem('tia_cliente', JSON.stringify({ nombre: state.nombre, telefono: state.telefono, email: state.email }));
         document.getElementById('bookingSuccessText').textContent =
-          `${state.nombre}, te esperamos el ${formatDate(state.fecha)} a las ${state.hora} para ${state.servicio} con ${state.empleado}. ¡Hasta pronto!`;
+          `${state.nombre}, te esperamos el ${formatDate(state.fecha)} a las ${state.hora} para ${state.servicio} con ${state.empleado}.${state.email ? ' Te hemos enviado la confirmación por email.' : ''} ¡Hasta pronto!`;
         showSuccess();
       } else {
         msg.textContent = data.error || 'Error al agendar. Llámanos al 93 189 40 78.';
@@ -225,16 +224,14 @@ const Booking = (() => {
     document.getElementById('bkBack6')?.addEventListener('click', () => showPanel(5));
     document.getElementById('bkNext6')?.addEventListener('click', () => next(6));
     document.getElementById('bkBack7')?.addEventListener('click', () => showPanel(6));
+    document.getElementById('bkNext7')?.addEventListener('click', () => next(7));
+    document.getElementById('bkBack8')?.addEventListener('click', () => showPanel(7));
     document.getElementById('bookingSubmit')?.addEventListener('click', submit);
 
-    // Enter avanza en los inputs de texto
-    ['bNombre','bTelefono'].forEach(id => {
+    // Enter avanza en inputs de texto
+    [['bNombre',5],['bTelefono',6],['bEmail',7]].forEach(([id, step]) => {
       document.getElementById(id)?.addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          const step = id === 'bNombre' ? 5 : 6;
-          next(step);
-        }
+        if (e.key === 'Enter') { e.preventDefault(); next(step); }
       });
     });
   }

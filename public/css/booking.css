@@ -74,8 +74,24 @@
   height: 8px;
   border-radius: 50%;
   background: #2a2a2a;
-  transition: all 240ms ease;
+  transition: background 300ms ease, width 300ms ease, border-radius 300ms ease;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: dotIn 400ms ease forwards;
 }
+.bk-dot:nth-child(1) { animation-delay: 0ms; }
+.bk-dot:nth-child(2) { animation-delay: 60ms; }
+.bk-dot:nth-child(3) { animation-delay: 120ms; }
+.bk-dot:nth-child(4) { animation-delay: 180ms; }
+.bk-dot:nth-child(5) { animation-delay: 240ms; }
+.bk-dot:nth-child(6) { animation-delay: 300ms; }
+.bk-dot:nth-child(7) { animation-delay: 360ms; }
+.bk-dot:nth-child(8) { animation-delay: 420ms; }
+
+@keyframes dotIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .bk-dot.active  { background: #fff; width: 24px; border-radius: 4px; }
 .bk-dot.done    { background: #555; }
 
