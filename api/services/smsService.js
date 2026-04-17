@@ -53,13 +53,15 @@ Para cambios llama al 93 189 40 78.
     console.error('[SMS] Error:', err.message);
   }
 
-  // Llamada de voz en español via endpoint TwiML
-  const params   = new URLSearchParams({ nombre, servicio, fecha, hora });
-  const twimlUrl = `https://this-is-art-app-production.up.railway.app/api/twiml/confirmacion?${params}`;
+  // Llamada de voz en español — TwiML inline (confirmado funcionando)
+  const [h, m]  = hora.split(':');
+  const horaVoz = m === '00' ? `las ${h}` : `las ${h} y ${m}`;
+
+  const twiml = `<Response><Say voice="alice" language="es-ES">Hola ${nombre}. Te llamamos desde THIS IS ART, tu barberia de confianza en Terrassa. Tu cita esta confirmada para el ${fechaFormateada}, a ${horaVoz}. El servicio elegido es ${servicio}. Estamos en el Carrer de Volta, ochenta y dos. Si necesitas cambiar la cita llamanos al noventa y tres, ciento ochenta y nueve, cuarenta, setenta y ocho. Muchas gracias ${nombre}. Hasta pronto.</Say></Response>`;
 
   try {
     const call = await client.calls.create({
-      url:  twimlUrl,
+      twiml,
       from: process.env.TWILIO_PHONE_NUMBER,
       to:   telefonoNorm,
     });
