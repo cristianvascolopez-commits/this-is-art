@@ -1,45 +1,42 @@
 /* =====================
    THIS IS ART — booking.js
-   Modal multi-paso de reserva
+   Reserva paso a paso (7 pasos)
    ===================== */
 
 const Booking = (() => {
   const state = {
     step: 1,
-    servicio: '',
-    precio: '',
+    servicio: '', precio: '',
     empleado: '',
-    fecha: '',
-    hora: '',
-    nombre: '',
-    telefono: '',
+    fecha: '', hora: '',
+    nombre: '', telefono: '',
   };
+
+  const TOTAL_STEPS = 7;
 
   // ── Abrir / cerrar ──────────────────────────────
   function open(servicioPreseleccionado) {
-    resetState();
-    renderStep(1);
+    reset();
+    showPanel(1);
 
-    if (servicioPreseleccionado) {
-      const cards = document.querySelectorAll('.booking-service-card');
-      cards.forEach(c => {
-        if (c.dataset.value.toLowerCase().includes(servicioPreseleccionado.toLowerCase())) {
-          selectService(c);
-        }
-      });
-    }
-
+    // Fecha mínima = hoy
     const today = new Date().toISOString().split('T')[0];
-    const fechaInput = document.getElementById('bFecha');
-    if (fechaInput) {
-      fechaInput.min = today;
-      fechaInput.value = today;
-    }
+    const fi = document.getElementById('bFecha');
+    if (fi) { fi.min = today; fi.value = today; }
 
-    // Auto-relleno con datos guardados
+    // Auto-relleno datos guardados
     const saved = JSON.parse(localStorage.getItem('tia_cliente') || '{}');
     if (saved.nombre)   { const el = document.getElementById('bNombre');   if (el) el.value = saved.nombre; }
     if (saved.telefono) { const el = document.getElementById('bTelefono'); if (el) el.value = saved.telefono; }
+
+    // Preseleccionar servicio si viene de una tarjeta de servicio
+    if (servicioPreseleccionado) {
+      document.querySelectorAll('.bk-svc').forEach(c => {
+        if (c.dataset.value.toLowerCase().includes(servicioPreseleccionado.toLowerCase())) {
+          selectSvc(c);
+        }
+      });
+    }
 
     document.getElementById('bookingOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -50,94 +47,95 @@ const Booking = (() => {
     document.body.style.overflow = '';
   }
 
-  function resetState() {
+  function reset() {
     Object.assign(state, { step:1, servicio:'', precio:'', empleado:'', fecha:'', hora:'', nombre:'', telefono:'' });
-    document.querySelectorAll('.booking-service-card').forEach(c => c.classList.remove('selected'));
-    document.querySelectorAll('.booking-emp-card').forEach(c => c.classList.remove('selected'));
-    document.querySelectorAll('.booking-slot').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.bk-svc, .bk-emp, .bk-slot').forEach(el => el.classList.remove('selected'));
     const msg = document.getElementById('bookingMsg');
-    if (msg) { msg.textContent = ''; msg.className = 'booking-msg'; }
-    const success = document.getElementById('bookingSuccess');
-    if (success) { success.classList.remove('active'); success.style.display = ''; }
+    if (msg) { msg.textContent = ''; msg.className = 'bk-msg'; }
+    document.getElementById('bookingSuccess').classList.remove('active');
   }
 
-  // ── Navegación de pasos ─────────────────────────
-  function renderStep(n) {
+  // ── Mostrar panel ───────────────────────────────
+  function showPanel(n) {
     state.step = n;
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+      const p = document.getElementById(`bkPanel${i}`);
+      if (p) p.style.display = (i === n) ? 'block' : 'none';
+    }
+    document.getElementById('bookingSuccess').classList.remove('active');
 
-    [1,2,3,4].forEach(i => {
-      const p = document.getElementById(`stepPanel${i}`);
-      if (p) p.classList.toggle('active', i === n);
+    // Dots
+    document.querySelectorAll('.bk-dot').forEach(d => {
+      const s = parseInt(d.dataset.step);
+      d.classList.remove('active', 'done');
+      if (s === n) d.classList.add('active');
+      if (s < n)  d.classList.add('done');
     });
 
-    document.querySelectorAll('.booking-step-label').forEach(el => {
-      const s = parseInt(el.dataset.step);
-      el.classList.remove('active', 'done');
-      if (s === n) el.classList.add('active');
-      if (s < n)  el.classList.add('done');
-    });
-
-    const progress = document.getElementById('bookingProgress');
-    const body = document.querySelector('.booking-body');
-    const success = document.getElementById('bookingSuccess');
-
-    if (n === 0) {
-      progress.style.display = 'none';
-      body.style.display = 'none';
-      success.classList.add('active');
-    } else {
-      progress.style.display = '';
-      body.style.display = '';
-      success.classList.remove('active');
-    }
+    document.getElementById('bookingProgress').style.display = '';
+    document.querySelector('.booking-modal').scrollTop = 0;
   }
 
-  function goNext(from) {
-    if (from === 1) {
-      if (!state.servicio) return alert('Por favor selecciona un servicio.');
-      if (!state.empleado) return alert('Por favor elige un profesional.');
-      renderStep(2);
-    } else if (from === 2) {
-      const fechaInput = document.getElementById('bFecha');
-      state.fecha = fechaInput?.value || '';
-      if (!state.fecha) return alert('Por favor selecciona una fecha.');
-      if (!state.hora)  return alert('Por favor selecciona una hora.');
-      const day = new Date(state.fecha).getDay();
-      if (day === 0) return alert('Los domingos estamos cerrados. Por favor elige otro día.');
-      renderStep(3);
-    } else if (from === 3) {
-      state.nombre   = document.getElementById('bNombre')?.value.trim() || '';
-      state.telefono = document.getElementById('bTelefono')?.value.trim() || '';
-      if (!state.nombre)   return alert('Por favor introduce tu nombre.');
-      if (!state.telefono) return alert('Por favor introduce tu teléfono.');
-      fillSummary();
-      renderStep(4);
+  function showSuccess() {
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+      const p = document.getElementById(`bkPanel${i}`);
+      if (p) p.style.display = 'none';
     }
-  }
-
-  function goBack(from) {
-    renderStep(from - 1);
+    document.getElementById('bookingProgress').style.display = 'none';
+    document.getElementById('bookingSuccess').classList.add('active');
   }
 
   // ── Selectores ─────────────────────────────────
-  function selectService(card) {
-    document.querySelectorAll('.booking-service-card').forEach(c => c.classList.remove('selected'));
+  function selectSvc(card) {
+    document.querySelectorAll('.bk-svc').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
     state.servicio = card.dataset.value;
     state.precio   = card.dataset.price;
   }
 
   function selectEmp(card) {
-    document.querySelectorAll('.booking-emp-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.bk-emp').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
     state.empleado = card.dataset.emp;
   }
 
   function selectSlot(slot) {
-    document.querySelectorAll('.booking-slot').forEach(s => s.classList.remove('selected'));
+    document.querySelectorAll('.bk-slot').forEach(s => s.classList.remove('selected'));
     slot.classList.add('selected');
     state.hora = slot.dataset.hora;
   }
+
+  // ── Validación y avance ─────────────────────────
+  function next(from) {
+    if (from === 1) {
+      if (!state.servicio) return warn('Por favor selecciona un servicio.');
+      showPanel(2);
+    } else if (from === 2) {
+      if (!state.empleado) return warn('Por favor elige un profesional.');
+      showPanel(3);
+    } else if (from === 3) {
+      const fi = document.getElementById('bFecha');
+      state.fecha = fi?.value || '';
+      if (!state.fecha) return warn('Por favor selecciona una fecha.');
+      const day = new Date(state.fecha).getDay();
+      if (day === 0) return warn('Los domingos estamos cerrados. Elige otro día.');
+      showPanel(4);
+    } else if (from === 4) {
+      if (!state.hora) return warn('Por favor selecciona una hora.');
+      showPanel(5);
+    } else if (from === 5) {
+      state.nombre = document.getElementById('bNombre')?.value.trim() || '';
+      if (!state.nombre) return warn('Por favor introduce tu nombre.');
+      showPanel(6);
+    } else if (from === 6) {
+      state.telefono = document.getElementById('bTelefono')?.value.trim() || '';
+      if (!state.telefono) return warn('Por favor introduce tu teléfono.');
+      fillSummary();
+      showPanel(7);
+    }
+  }
+
+  function warn(msg) { alert(msg); }
 
   // ── Resumen ────────────────────────────────────
   function fillSummary() {
@@ -157,7 +155,7 @@ const Booking = (() => {
 
     btn.disabled = true;
     btn.textContent = 'Agendando...';
-    msg.className = 'booking-msg';
+    msg.className = 'bk-msg';
     msg.textContent = '';
 
     const servicioCompleto = state.precio
@@ -180,20 +178,19 @@ const Booking = (() => {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        // Guardar datos del cliente para próximas reservas
         localStorage.setItem('tia_cliente', JSON.stringify({ nombre: state.nombre, telefono: state.telefono }));
         document.getElementById('bookingSuccessText').textContent =
           `${state.nombre}, te esperamos el ${formatDate(state.fecha)} a las ${state.hora} para ${state.servicio} con ${state.empleado}. ¡Hasta pronto!`;
-        renderStep(0);
+        showSuccess();
       } else {
         msg.textContent = data.error || 'Error al agendar. Llámanos al 93 189 40 78.';
-        msg.className = 'booking-msg error';
+        msg.className = 'bk-msg error';
         btn.disabled = false;
         btn.textContent = '📅 Confirmar cita';
       }
     } catch {
       msg.textContent = 'Sin conexión. Llámanos al ☎ 93 189 40 78 o reserva en Booksy.';
-      msg.className = 'booking-msg error';
+      msg.className = 'bk-msg error';
       btn.disabled = false;
       btn.textContent = '📅 Confirmar cita';
     }
@@ -201,8 +198,8 @@ const Booking = (() => {
 
   function formatDate(dateStr) {
     if (!dateStr) return '—';
-    const d = new Date(dateStr + 'T12:00:00');
-    return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+    return new Date(dateStr + 'T12:00:00')
+      .toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
   }
 
   // ── Init ───────────────────────────────────────
@@ -212,35 +209,40 @@ const Booking = (() => {
       if (e.target === e.currentTarget) close();
     });
 
-    document.querySelectorAll('.booking-service-card').forEach(c => {
-      c.addEventListener('click', () => selectService(c));
-    });
+    document.querySelectorAll('.bk-svc').forEach(c  => c.addEventListener('click', () => selectSvc(c)));
+    document.querySelectorAll('.bk-emp').forEach(c  => c.addEventListener('click', () => selectEmp(c)));
+    document.querySelectorAll('.bk-slot').forEach(s => s.addEventListener('click', () => selectSlot(s)));
 
-    document.querySelectorAll('.booking-emp-card').forEach(c => {
-      c.addEventListener('click', () => selectEmp(c));
-    });
-
-    document.querySelectorAll('.booking-slot').forEach(s => {
-      s.addEventListener('click', () => selectSlot(s));
-    });
-
-    document.getElementById('step1Next')?.addEventListener('click', () => goNext(1));
-    document.getElementById('step2Back')?.addEventListener('click', () => goBack(2));
-    document.getElementById('step2Next')?.addEventListener('click', () => goNext(2));
-    document.getElementById('step3Back')?.addEventListener('click', () => goBack(3));
-    document.getElementById('step3Next')?.addEventListener('click', () => goNext(3));
-    document.getElementById('step4Back')?.addEventListener('click', () => goBack(4));
+    document.getElementById('bkNext1')?.addEventListener('click', () => next(1));
+    document.getElementById('bkBack2')?.addEventListener('click', () => showPanel(1));
+    document.getElementById('bkNext2')?.addEventListener('click', () => next(2));
+    document.getElementById('bkBack3')?.addEventListener('click', () => showPanel(2));
+    document.getElementById('bkNext3')?.addEventListener('click', () => next(3));
+    document.getElementById('bkBack4')?.addEventListener('click', () => showPanel(3));
+    document.getElementById('bkNext4')?.addEventListener('click', () => next(4));
+    document.getElementById('bkBack5')?.addEventListener('click', () => showPanel(4));
+    document.getElementById('bkNext5')?.addEventListener('click', () => next(5));
+    document.getElementById('bkBack6')?.addEventListener('click', () => showPanel(5));
+    document.getElementById('bkNext6')?.addEventListener('click', () => next(6));
+    document.getElementById('bkBack7')?.addEventListener('click', () => showPanel(6));
     document.getElementById('bookingSubmit')?.addEventListener('click', submit);
+
+    // Enter avanza en los inputs de texto
+    ['bNombre','bTelefono'].forEach(id => {
+      document.getElementById(id)?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const step = id === 'bNombre' ? 5 : 6;
+          next(step);
+        }
+      });
+    });
   }
 
   return { init, open, close };
 })();
 
-function openBooking(servicioPreseleccionado) {
-  Booking.open(servicioPreseleccionado);
-}
-function closeBooking() {
-  Booking.close();
-}
+function openBooking(servicioPreseleccionado) { Booking.open(servicioPreseleccionado); }
+function closeBooking() { Booking.close(); }
 
 document.addEventListener('DOMContentLoaded', () => Booking.init());

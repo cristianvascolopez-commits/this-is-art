@@ -563,231 +563,201 @@
     </div>
   </div>
 
-  <!-- ========== MODAL RESERVA MULTI-PASO ========== -->
+  <!-- ========== MODAL RESERVA PASO A PASO ========== -->
   <div class="booking-overlay" id="bookingOverlay">
     <div class="booking-modal" id="bookingModal">
 
       <button class="booking-close" id="bookingClose">✕</button>
 
-      <!-- Cabecera -->
-      <div class="booking-header">
-        <div class="booking-header-icon">✂</div>
-        <div class="booking-header-text">
-          <h2>Reservar cita</h2>
-          <p>THIS IS ART · Terrassa</p>
+      <!-- Dots de progreso -->
+      <div class="bk-progress" id="bookingProgress">
+        <div class="bk-dot active" data-step="1"></div>
+        <div class="bk-dot" data-step="2"></div>
+        <div class="bk-dot" data-step="3"></div>
+        <div class="bk-dot" data-step="4"></div>
+        <div class="bk-dot" data-step="5"></div>
+        <div class="bk-dot" data-step="6"></div>
+        <div class="bk-dot" data-step="7"></div>
+      </div>
+
+      <!-- ── PASO 1: Servicio ── -->
+      <div class="bk-body" id="bkPanel1">
+        <p class="bk-question">¿Qué servicio deseas?</p>
+        <p class="bk-hint">THIS IS ART · Terrassa</p>
+        <div class="bk-services">
+          <div class="bk-svc" data-value="Corte de pelo" data-price="15,95€">
+            <span class="bk-svc-name">✂ Corte de pelo</span>
+            <span class="bk-svc-price">15,95 €</span>
+          </div>
+          <div class="bk-svc" data-value="Corte + Barba" data-price="22,95€">
+            <span class="bk-svc-name">✂ Corte + Barba</span>
+            <span class="bk-svc-price">22,95 €</span>
+          </div>
+          <div class="bk-svc" data-value="Corte de niño" data-price="12,50€">
+            <span class="bk-svc-name">👦 Corte de niño</span>
+            <span class="bk-svc-price">12,50 €</span>
+          </div>
+          <div class="bk-svc" data-value="Barba (rapar)" data-price="">
+            <span class="bk-svc-name">🪒 Barba (rapar)</span>
+            <span class="bk-svc-price">Consultar</span>
+          </div>
+          <div class="bk-svc" data-value="Barba (dar forma)" data-price="">
+            <span class="bk-svc-name">🪒 Barba (dar forma)</span>
+            <span class="bk-svc-price">Consultar</span>
+          </div>
+          <div class="bk-svc" data-value="Recorte de barba" data-price="">
+            <span class="bk-svc-name">🪒 Recorte de barba</span>
+            <span class="bk-svc-price">Consultar</span>
+          </div>
+          <div class="bk-svc" data-value="Coloración" data-price="">
+            <span class="bk-svc-name">🎨 Coloración</span>
+            <span class="bk-svc-price">Consultar</span>
+          </div>
+          <div class="bk-svc" data-value="Decoloración" data-price="">
+            <span class="bk-svc-name">🎨 Decoloración</span>
+            <span class="bk-svc-price">Consultar</span>
+          </div>
+          <div class="bk-svc" data-value="Mechas" data-price="">
+            <span class="bk-svc-name">🎨 Mechas</span>
+            <span class="bk-svc-price">Consultar</span>
+          </div>
+          <div class="bk-svc" data-value="Afeitado con cuchilla" data-price="">
+            <span class="bk-svc-name">🪒 Afeitado</span>
+            <span class="bk-svc-price">Consultar</span>
+          </div>
+          <div class="bk-svc" data-value="Masaje craneal" data-price="">
+            <span class="bk-svc-name">💆 Masaje craneal</span>
+            <span class="bk-svc-price">Consultar</span>
+          </div>
+          <div class="bk-svc" data-value="Paquete novios" data-price="">
+            <span class="bk-svc-name">💍 Paquete novios</span>
+            <span class="bk-svc-price">Consultar</span>
+          </div>
+        </div>
+        <div class="bk-nav">
+          <button class="bk-btn-next" id="bkNext1">Siguiente →</button>
+        </div>
+        <p class="bk-note">También en <a href="https://booksy.com/es-es/117752_this-is-art_barberia_133226_terrassa" target="_blank">Booksy</a> o llámanos al <a href="tel:+34931894078">93 189 40 78</a></p>
+      </div>
+
+      <!-- ── PASO 2: Empleado ── -->
+      <div class="bk-body" id="bkPanel2" style="display:none">
+        <p class="bk-question">¿Con quién quieres tu cita?</p>
+        <p class="bk-hint">Elige tu profesional</p>
+        <div class="bk-employees">
+          <div class="bk-emp" data-emp="Empleado 1">
+            <div class="bk-emp-avatar">✂</div>
+            <span class="bk-emp-name">Empleado 1</span>
+          </div>
+          <div class="bk-emp" data-emp="Empleado 2">
+            <div class="bk-emp-avatar">✂</div>
+            <span class="bk-emp-name">Empleado 2</span>
+          </div>
+          <div class="bk-emp" data-emp="Empleado 3">
+            <div class="bk-emp-avatar">✂</div>
+            <span class="bk-emp-name">Empleado 3</span>
+          </div>
+          <div class="bk-emp" data-emp="Empleado 4">
+            <div class="bk-emp-avatar">✂</div>
+            <span class="bk-emp-name">Empleado 4</span>
+          </div>
+        </div>
+        <div class="bk-nav">
+          <button class="bk-btn-back" id="bkBack2">← Volver</button>
+          <button class="bk-btn-next" id="bkNext2">Siguiente →</button>
         </div>
       </div>
 
-      <!-- Barra de progreso -->
-      <div class="booking-progress" id="bookingProgress">
-        <div class="booking-step-label active" data-step="1">
-          <div class="booking-step-dot">1</div>
-          <span class="booking-step-name">Servicio</span>
-        </div>
-        <div class="booking-step-label" data-step="2">
-          <div class="booking-step-dot">2</div>
-          <span class="booking-step-name">Hora</span>
-        </div>
-        <div class="booking-step-label" data-step="3">
-          <div class="booking-step-dot">3</div>
-          <span class="booking-step-name">Detalles</span>
-        </div>
-        <div class="booking-step-label" data-step="4">
-          <div class="booking-step-dot">✓</div>
-          <span class="booking-step-name">Hecho</span>
+      <!-- ── PASO 3: Fecha ── -->
+      <div class="bk-body" id="bkPanel3" style="display:none">
+        <p class="bk-question">¿Qué día te viene bien?</p>
+        <p class="bk-hint">Lunes a sábado · Domingos cerrado</p>
+        <input type="date" class="bk-date-input" id="bFecha">
+        <div class="bk-nav">
+          <button class="bk-btn-back" id="bkBack3">← Volver</button>
+          <button class="bk-btn-next" id="bkNext3">Siguiente →</button>
         </div>
       </div>
 
-      <!-- ── PASO 1: Servicio + Empleado ── -->
-      <div class="booking-body">
-
-        <div class="booking-panel active" id="stepPanel1">
-          <p class="booking-panel-title">Selecciona un servicio</p>
-          <div class="booking-services" id="bookingServices">
-            <div class="booking-service-card" data-value="Corte de pelo" data-price="15,95€">
-              <span class="svc-name">✂ Corte de pelo</span>
-              <span class="svc-price">15,95 €</span>
-            </div>
-            <div class="booking-service-card" data-value="Corte + Barba" data-price="22,95€">
-              <span class="svc-name">✂ Corte + Barba</span>
-              <span class="svc-price">22,95 €</span>
-            </div>
-            <div class="booking-service-card" data-value="Corte de niño" data-price="12,50€">
-              <span class="svc-name">👦 Corte de niño</span>
-              <span class="svc-price">12,50 €</span>
-            </div>
-            <div class="booking-service-card" data-value="Barba (rapar)" data-price="">
-              <span class="svc-name">🪒 Barba (rapar)</span>
-              <span class="svc-price">Consultar</span>
-            </div>
-            <div class="booking-service-card" data-value="Barba (dar forma)" data-price="">
-              <span class="svc-name">🪒 Barba (dar forma)</span>
-              <span class="svc-price">Consultar</span>
-            </div>
-            <div class="booking-service-card" data-value="Recorte de barba" data-price="">
-              <span class="svc-name">🪒 Recorte de barba</span>
-              <span class="svc-price">Consultar</span>
-            </div>
-            <div class="booking-service-card" data-value="Color / Coloración" data-price="">
-              <span class="svc-name">🎨 Coloración</span>
-              <span class="svc-price">Consultar</span>
-            </div>
-            <div class="booking-service-card" data-value="Decoloración" data-price="">
-              <span class="svc-name">🎨 Decoloración</span>
-              <span class="svc-price">Consultar</span>
-            </div>
-            <div class="booking-service-card" data-value="Mechas" data-price="">
-              <span class="svc-name">🎨 Mechas</span>
-              <span class="svc-price">Consultar</span>
-            </div>
-            <div class="booking-service-card" data-value="Afeitado con cuchilla" data-price="">
-              <span class="svc-name">🪒 Afeitado</span>
-              <span class="svc-price">Consultar</span>
-            </div>
-            <div class="booking-service-card" data-value="Masaje craneal" data-price="">
-              <span class="svc-name">💆 Masaje craneal</span>
-              <span class="svc-price">Consultar</span>
-            </div>
-            <div class="booking-service-card" data-value="Paquete novios" data-price="">
-              <span class="svc-name">💍 Paquete novios</span>
-              <span class="svc-price">Consultar</span>
-            </div>
-          </div>
-
-          <p class="booking-panel-title" style="margin-top:var(--space-2)">Elige tu profesional</p>
-          <div class="booking-employees">
-            <div class="booking-emp-card" data-emp="Empleado 1">
-              <div class="booking-emp-avatar">✂</div>
-              <span class="booking-emp-name">Empleado 1</span>
-            </div>
-            <div class="booking-emp-card" data-emp="Empleado 2">
-              <div class="booking-emp-avatar">✂</div>
-              <span class="booking-emp-name">Empleado 2</span>
-            </div>
-            <div class="booking-emp-card" data-emp="Empleado 3">
-              <div class="booking-emp-avatar">✂</div>
-              <span class="booking-emp-name">Empleado 3</span>
-            </div>
-            <div class="booking-emp-card" data-emp="Empleado 4">
-              <div class="booking-emp-avatar">✂</div>
-              <span class="booking-emp-name">Empleado 4</span>
-            </div>
-          </div>
-
-          <div class="booking-nav">
-            <button class="booking-btn-next" id="step1Next">Siguiente →</button>
-          </div>
-          <p class="booking-note">También puedes reservar en <a href="https://booksy.com/es-es/117752_this-is-art_barberia_133226_terrassa" target="_blank">Booksy</a> o llamar al <a href="tel:+34931894078">93 189 40 78</a></p>
+      <!-- ── PASO 4: Hora ── -->
+      <div class="bk-body" id="bkPanel4" style="display:none">
+        <p class="bk-question">¿A qué hora?</p>
+        <p class="bk-hint">Horario 10:00 – 21:00</p>
+        <div class="bk-slots">
+          <div class="bk-slot" data-hora="10:00">10:00</div>
+          <div class="bk-slot" data-hora="10:30">10:30</div>
+          <div class="bk-slot" data-hora="11:00">11:00</div>
+          <div class="bk-slot" data-hora="11:30">11:30</div>
+          <div class="bk-slot" data-hora="12:00">12:00</div>
+          <div class="bk-slot" data-hora="12:30">12:30</div>
+          <div class="bk-slot" data-hora="13:00">13:00</div>
+          <div class="bk-slot" data-hora="13:30">13:30</div>
+          <div class="bk-slot" data-hora="16:00">16:00</div>
+          <div class="bk-slot" data-hora="16:30">16:30</div>
+          <div class="bk-slot" data-hora="17:00">17:00</div>
+          <div class="bk-slot" data-hora="17:30">17:30</div>
+          <div class="bk-slot" data-hora="18:00">18:00</div>
+          <div class="bk-slot" data-hora="18:30">18:30</div>
+          <div class="bk-slot" data-hora="19:00">19:00</div>
+          <div class="bk-slot" data-hora="19:30">19:30</div>
+          <div class="bk-slot" data-hora="20:00">20:00</div>
+          <div class="bk-slot" data-hora="20:30">20:30</div>
         </div>
-
-        <!-- ── PASO 2: Fecha + Hora ── -->
-        <div class="booking-panel" id="stepPanel2">
-          <p class="booking-panel-title">Elige fecha y hora</p>
-          <div class="booking-date-row">
-            <div class="booking-field">
-              <label>Fecha</label>
-              <input type="date" id="bFecha">
-            </div>
-            <div class="booking-field" style="display:flex;flex-direction:column;justify-content:flex-end;">
-              <label>Horario: Lun–Sáb &nbsp; 10:00–21:00</label>
-              <div style="font-size:0.8rem;color:var(--color-text-muted);padding:var(--space-3) 0;">Domingos cerrado</div>
-            </div>
-          </div>
-
-          <div>
-            <p class="booking-panel-title" style="margin-bottom:var(--space-3)">Hora disponible</p>
-            <div class="booking-slots" id="bookingSlots">
-              <div class="booking-slot" data-hora="10:00">10:00</div>
-              <div class="booking-slot" data-hora="10:30">10:30</div>
-              <div class="booking-slot" data-hora="11:00">11:00</div>
-              <div class="booking-slot" data-hora="11:30">11:30</div>
-              <div class="booking-slot" data-hora="12:00">12:00</div>
-              <div class="booking-slot" data-hora="12:30">12:30</div>
-              <div class="booking-slot" data-hora="13:00">13:00</div>
-              <div class="booking-slot" data-hora="13:30">13:30</div>
-              <div class="booking-slot" data-hora="16:00">16:00</div>
-              <div class="booking-slot" data-hora="16:30">16:30</div>
-              <div class="booking-slot" data-hora="17:00">17:00</div>
-              <div class="booking-slot" data-hora="17:30">17:30</div>
-              <div class="booking-slot" data-hora="18:00">18:00</div>
-              <div class="booking-slot" data-hora="18:30">18:30</div>
-              <div class="booking-slot" data-hora="19:00">19:00</div>
-              <div class="booking-slot" data-hora="19:30">19:30</div>
-              <div class="booking-slot" data-hora="20:00">20:00</div>
-              <div class="booking-slot" data-hora="20:30">20:30</div>
-            </div>
-          </div>
-
-          <div class="booking-nav">
-            <button class="booking-btn-back" id="step2Back">← Volver</button>
-            <button class="booking-btn-next" id="step2Next">Siguiente →</button>
-          </div>
+        <div class="bk-nav" style="margin-top:1rem">
+          <button class="bk-btn-back" id="bkBack4">← Volver</button>
+          <button class="bk-btn-next" id="bkNext4">Siguiente →</button>
         </div>
+      </div>
 
-        <!-- ── PASO 3: Datos personales ── -->
-        <div class="booking-panel" id="stepPanel3">
-          <p class="booking-panel-title">Tus datos de contacto</p>
-          <div class="booking-details-grid">
-            <div class="booking-field">
-              <label>Nombre completo *</label>
-              <input type="text" id="bNombre" placeholder="Tu nombre" maxlength="100" autocomplete="name">
-            </div>
-            <div class="booking-field">
-              <label>Teléfono *</label>
-              <input type="tel" id="bTelefono" placeholder="6XX XXX XXX" maxlength="20" autocomplete="tel">
-            </div>
-          </div>
-          <div class="booking-nav">
-            <button class="booking-btn-back" id="step3Back">← Volver</button>
-            <button class="booking-btn-next" id="step3Next">Ver resumen →</button>
-          </div>
+      <!-- ── PASO 5: Nombre ── -->
+      <div class="bk-body" id="bkPanel5" style="display:none">
+        <p class="bk-question">¿Cuál es tu nombre?</p>
+        <p class="bk-hint">Nombre completo</p>
+        <input type="text" class="bk-input" id="bNombre" placeholder="Tu nombre" maxlength="100" autocomplete="name">
+        <div class="bk-nav">
+          <button class="bk-btn-back" id="bkBack5">← Volver</button>
+          <button class="bk-btn-next" id="bkNext5">Siguiente →</button>
         </div>
+      </div>
 
-        <!-- ── PASO 4: Confirmación ── -->
-        <div class="booking-panel" id="stepPanel4">
-          <p class="booking-panel-title">Confirma tu cita</p>
-          <div class="booking-summary" id="bookingSummary">
-            <div class="booking-summary-row">
-              <span class="label">Servicio</span>
-              <span class="value" id="sumServicio">—</span>
-            </div>
-            <div class="booking-summary-row">
-              <span class="label">Profesional</span>
-              <span class="value" id="sumEmpleado">—</span>
-            </div>
-            <div class="booking-summary-row">
-              <span class="label">Fecha</span>
-              <span class="value" id="sumFecha">—</span>
-            </div>
-            <div class="booking-summary-row">
-              <span class="label">Hora</span>
-              <span class="value" id="sumHora">—</span>
-            </div>
-            <div class="booking-summary-row">
-              <span class="label">Nombre</span>
-              <span class="value" id="sumNombre">—</span>
-            </div>
-            <div class="booking-summary-row">
-              <span class="label">Teléfono</span>
-              <span class="value" id="sumTelefono">—</span>
-            </div>
-          </div>
-          <div class="booking-msg" id="bookingMsg"></div>
-          <div class="booking-nav">
-            <button class="booking-btn-back" id="step4Back">← Volver</button>
-            <button class="booking-btn-next" id="bookingSubmit">📅 Confirmar cita</button>
-          </div>
+      <!-- ── PASO 6: Teléfono ── -->
+      <div class="bk-body" id="bkPanel6" style="display:none">
+        <p class="bk-question">¿Tu teléfono?</p>
+        <p class="bk-hint">Para confirmarte la cita</p>
+        <input type="tel" class="bk-input" id="bTelefono" placeholder="6XX XXX XXX" maxlength="20" autocomplete="tel">
+        <div class="bk-nav">
+          <button class="bk-btn-back" id="bkBack6">← Volver</button>
+          <button class="bk-btn-next" id="bkNext6">Ver resumen →</button>
         </div>
+      </div>
 
-        <!-- ── ÉXITO ── -->
-        <div class="booking-success-panel" id="bookingSuccess">
-          <div class="booking-success-icon">✅</div>
-          <h3 class="booking-success-title">¡Cita confirmada!</h3>
-          <p class="booking-success-text" id="bookingSuccessText">Tu cita ha sido registrada en nuestro calendario. ¡Hasta pronto!</p>
-          <button class="booking-btn-next" style="max-width:220px;" onclick="closeBooking()">Cerrar</button>
+      <!-- ── PASO 7: Confirmación ── -->
+      <div class="bk-body" id="bkPanel7" style="display:none">
+        <p class="bk-question">Confirma tu cita</p>
+        <p class="bk-hint">Revisa los datos antes de confirmar</p>
+        <div class="bk-summary">
+          <div class="bk-sum-row"><span class="lbl">Servicio</span>    <span class="val" id="sumServicio">—</span></div>
+          <div class="bk-sum-row"><span class="lbl">Profesional</span> <span class="val" id="sumEmpleado">—</span></div>
+          <div class="bk-sum-row"><span class="lbl">Fecha</span>       <span class="val" id="sumFecha">—</span></div>
+          <div class="bk-sum-row"><span class="lbl">Hora</span>        <span class="val" id="sumHora">—</span></div>
+          <div class="bk-sum-row"><span class="lbl">Nombre</span>      <span class="val" id="sumNombre">—</span></div>
+          <div class="bk-sum-row"><span class="lbl">Teléfono</span>    <span class="val" id="sumTelefono">—</span></div>
         </div>
+        <div class="bk-msg" id="bookingMsg"></div>
+        <div class="bk-nav">
+          <button class="bk-btn-back" id="bkBack7">← Volver</button>
+          <button class="bk-btn-next" id="bookingSubmit">📅 Confirmar cita</button>
+        </div>
+      </div>
 
-      </div><!-- /booking-body -->
+      <!-- ── ÉXITO ── -->
+      <div class="bk-success" id="bookingSuccess">
+        <div class="bk-success-icon">✅</div>
+        <h3 class="bk-success-title">¡Cita confirmada!</h3>
+        <p class="bk-success-text" id="bookingSuccessText">Tu cita ha sido registrada. ¡Hasta pronto!</p>
+        <button class="bk-btn-next" style="max-width:200px;" onclick="closeBooking()">Cerrar</button>
+      </div>
+
     </div>
   </div>
 
