@@ -26,18 +26,33 @@ async function sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono }) 
     telefonoNorm = '+34' + telefonoNorm;
   }
 
+  const [h, m]   = hora.split(':');
+  const horaVoz  = m === '00' ? `las ${h}` : `las ${h} y ${m}`;
+
   // Mensaje de voz en español
   const mensaje = `
     <Response>
       <Say language="es-ES" voice="Polly.Conchita">
-        Hola ${nombre}, te llamamos de THIS IS ART, barbería en Terrassa.
-        Tu cita ha quedado confirmada.
-        Servicio: ${servicio}.
-        Fecha: ${fechaFormateada}.
-        Hora: ${hora.replace(':', ' y ')}.
-        Nos encontramos en Carrer de Volta, ochenta y dos, Terrassa.
-        Para cambiar o cancelar tu cita llámanos al noventa y tres, ciento ochenta y nueve, cuarenta, setenta y ocho.
-        ¡Hasta pronto!
+        <prosody rate="95%">
+          Hola ${nombre}, ¿qué tal?
+          <break time="400ms"/>
+          Te llamamos desde THIS IS ART, tu barbería de confianza en Terrassa.
+          <break time="500ms"/>
+          Te confirmamos que tu cita está reservada y te esperamos con muchas ganas.
+          <break time="400ms"/>
+          Tienes el ${fechaFormateada}, a ${horaVoz} en punto.
+          El servicio que has elegido es ${servicio}.
+          <break time="500ms"/>
+          Nos encontramos en el Carrer de Volta, número ochenta y dos, aquí en Terrassa.
+          Si necesitas aparcamiento, el parking La Rasa está a pocos metros y tienes treinta minutos gratis.
+          <break time="500ms"/>
+          Si por cualquier motivo necesitas cambiar o cancelar tu cita, llámanos al
+          noventa y tres, ciento ochenta y nueve, cuarenta, setenta y ocho,
+          y lo gestionamos encantados.
+          <break time="400ms"/>
+          Muchas gracias por confiar en THIS IS ART, ${nombre}.
+          ¡Te esperamos pronto!
+        </prosody>
       </Say>
     </Response>
   `.trim();
