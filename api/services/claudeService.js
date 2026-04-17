@@ -3,10 +3,29 @@ const { loadKnowledge } = require('./cerebroService');
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+function getCurrentDateInfo() {
+  const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Madrid' }));
+  const fmt  = (d) => d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Madrid' });
+  const iso  = (d) => d.toISOString().split('T')[0];
+
+  const hoy     = new Date(now); hoy.setHours(12,0,0,0);
+  const manana  = new Date(hoy); manana.setDate(hoy.getDate() + 1);
+  const pasado  = new Date(hoy); pasado.setDate(hoy.getDate() + 2);
+
+  return `FECHA ACTUAL (zona horaria Europa/Madrid):
+- Hoy:           ${fmt(hoy)}  [ISO: ${iso(hoy)}]
+- Mañana:        ${fmt(manana)}  [ISO: ${iso(manana)}]
+- Pasado mañana: ${fmt(pasado)}  [ISO: ${iso(pasado)}]
+Cuando el usuario diga "hoy", "mañana" o "pasado mañana" usa estas fechas exactas.
+Recuerda que los DOMINGOS estamos cerrados.`;
+}
+
 const SYSTEM_PROMPT_TEMPLATE = (knowledge) => `
 Eres el asistente virtual de la barbería THIS IS ART, ubicada en Terrassa (Barcelona).
 Tu nombre es "Asistente THIS IS ART". Eres amable, profesional y cercano.
 Siempre respondes en español.
+
+${getCurrentDateInfo()}
 
 CONOCIMIENTO BASE:
 ${knowledge}
@@ -16,11 +35,11 @@ INSTRUCCIONES IMPORTANTES:
    - Nombre completo
    - Servicio deseado (muestra lista si no especifica)
    - Fecha preferida (recuerda que domingo está cerrado)
-   - Hora preferida (horario 10:00–19:30)
+   - Hora preferida (horario 10:00–20:30)
    - Teléfono de contacto
    Cuando tengas todos los datos, dile al usuario que su cita está siendo agendada
    y devuelve exactamente este JSON al final de tu respuesta para que el sistema la procese:
-   [CITA:{"nombre":"...","servicio":"...","fecha":"...","hora":"...","telefono":"..."}]
+   [CITA:{"nombre":"...","servicio":"...","fecha":"YYYY-MM-DD","hora":"HH:MM","telefono":"..."}]
 
 2. Si el usuario dice algo seguido de la palabra "memorizar", confirma que lo has guardado.
 
