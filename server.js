@@ -37,7 +37,9 @@ app.use(express.json({ limit: '1mb' }));
 
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 60000,
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 30,
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 200,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: { error: 'Demasiadas solicitudes. Por favor espera un momento.' },
 });
 app.use('/api/', limiter);

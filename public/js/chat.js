@@ -100,7 +100,8 @@ const Chat = (() => {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        appendMsg(err.error || 'Lo siento, ha ocurrido un error. Por favor, inténtalo de nuevo.', 'bot');
+        const msg = err.error || `Error ${res.status}. Por favor, inténtalo de nuevo.`;
+        appendMsg(msg, 'bot');
         return;
       }
 
