@@ -1,7 +1,7 @@
 const express = require('express');
 const router  = express.Router();
 const { askClaude }          = require('../services/claudeService');
-const { createAppointment }  = require('../services/calendarService');
+const { createAppointment, searchAppointments, cancelAppointment, updateAppointment } = require('../services/calendarService');
 const { sendConfirmation }   = require('../services/emailService');
 const { saveMemory, saveConversation, extractMemorizable } = require('../services/cerebroService');
 
@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
     }
 
     // Llamar a Claude
-    const rawReply = await askClaude(message, history);
+    let rawReply = await askClaude(message, history);
 
     // Detectar si Claude generó datos de cita
     const citaMatch = rawReply.match(/\[CITA:(\{.*?\})\]/s);
@@ -50,6 +50,58 @@ router.post('/', async (req, res) => {
 
       } catch (calErr) {
         console.error('[Calendar] Error al crear cita:', calErr.message);
+      }
+    }
+
+    // ── BUSCAR_CITA ──────────────────────────────────────────────────────────
+    const buscarMatch = rawReply.match(/\[BUSCAR_CITA:(\{.*?\})\]/s);
+    if (buscarMatch) {
+      try {
+        const { nombre, telefono } = JSON.parse(buscarMatch[1]);
+        const query = `${nombre} ${telefono || ''}`.trim();
+        const events = await searchAppointments(query);
+        let injection = '';
+        if (events.length === 0) {
+          injection = '\n\n[Sistema: No encontré citas próximas con esos datos. Pide al cliente que verifique nombre y teléfono.]';
+        } else {
+          const lista = events.map((e, i) => {
+            const dt  = new Date(e.start);
+            const dia = dt.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Madrid' });
+            const hr  = dt.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Madrid' });
+            const svc = e.summary.replace('✂ THIS IS ART — ', '');
+            return `${i + 1}. ${svc} — ${dia} a las ${hr} [ID:${e.id}]`;
+          }).join('\n');
+          injection = `\n\n[Sistema — citas encontradas:\n${lista}\nUsa el ID correspondiente para cancelar o modificar.]`;
+        }
+        rawReply = rawReply.replace(/\[BUSCAR_CITA:\{.*?\}\]/s, '').trim() + injection;
+      } catch (e) {
+        console.error('[Chat] Error búsqueda cita:', e.message);
+      }
+    }
+
+    // ── CANCELAR_CITA ─────────────────────────────────────────────────────────
+    const cancelarMatch = rawReply.match(/\[CANCELAR_CITA:(\{.*?\})\]/s);
+    if (cancelarMatch) {
+      try {
+        const { eventId, nombre } = JSON.parse(cancelarMatch[1]);
+        await cancelAppointment(eventId);
+        console.log('[Calendar] Cita cancelada:', eventId);
+        rawReply = rawReply.replace(/\[CANCELAR_CITA:\{.*?\}\]/s, '').trim();
+      } catch (e) {
+        console.error('[Chat] Error cancelar cita:', e.message);
+      }
+    }
+
+    // ── MODIFICAR_CITA ────────────────────────────────────────────────────────
+    const modificarMatch = rawReply.match(/\[MODIFICAR_CITA:(\{.*?\})\]/s);
+    if (modificarMatch) {
+      try {
+        const { eventId, fecha, hora } = JSON.parse(modificarMatch[1]);
+        await updateAppointment(eventId, { fecha, hora });
+        console.log('[Calendar] Cita modificada:', eventId);
+        rawReply = rawReply.replace(/\[MODIFICAR_CITA:\{.*?\}\]/s, '').trim();
+      } catch (e) {
+        console.error('[Chat] Error modificar cita:', e.message);
       }
     }
 

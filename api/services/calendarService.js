@@ -76,4 +76,65 @@ async function getAvailableSlots(dateStr) {
   }));
 }
 
-module.exports = { createAppointment, getAvailableSlots };
+async function searchAppointments(query) {
+  if (!process.env.GOOGLE_REFRESH_TOKEN) return [];
+
+  const auth     = getAuthClient();
+  const calendar = google.calendar({ version: 'v3', auth });
+  const calendarId = process.env.GOOGLE_CALENDAR_ID || 'cristianvascolopez@gmail.com';
+
+  const now     = new Date();
+  const timeMin = now.toISOString();
+  const timeMax = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000).toISOString();
+
+  const res = await calendar.events.list({
+    calendarId,
+    timeMin,
+    timeMax,
+    q: query,
+    singleEvents: true,
+    orderBy: 'startTime',
+    maxResults: 10,
+  });
+
+  return (res.data.items || [])
+    .filter(e => e.summary && e.summary.includes('THIS IS ART'))
+    .map(e => ({
+      id:       e.id,
+      summary:  e.summary,
+      start:    e.start.dateTime || e.start.date,
+      end:      e.end.dateTime || e.end.date,
+      description: e.description || '',
+    }));
+}
+
+async function cancelAppointment(eventId) {
+  const auth     = getAuthClient();
+  const calendar = google.calendar({ version: 'v3', auth });
+  const calendarId = process.env.GOOGLE_CALENDAR_ID || 'cristianvascolopez@gmail.com';
+  await calendar.events.delete({ calendarId, eventId });
+  return true;
+}
+
+async function updateAppointment(eventId, { fecha, hora }) {
+  const auth     = getAuthClient();
+  const calendar = google.calendar({ version: 'v3', auth });
+  const calendarId = process.env.GOOGLE_CALENDAR_ID || 'cristianvascolopez@gmail.com';
+
+  const existing = await calendar.events.get({ calendarId, eventId });
+  const ev = existing.data;
+
+  const slotMinutes = parseInt(process.env.SLOT_DURATION_MINUTES) || 30;
+  const [h, min]    = hora.split(':').map(Number);
+  const endMin      = h * 60 + min + slotMinutes;
+  const endHour     = Math.floor(endMin / 60).toString().padStart(2, '0');
+  const endMinStr   = (endMin % 60).toString().padStart(2, '0');
+
+  ev.start = { dateTime: `${fecha}T${hora.padStart(5,'0')}:00`, timeZone: 'Europe/Madrid' };
+  ev.end   = { dateTime: `${fecha}T${endHour}:${endMinStr}:00`, timeZone: 'Europe/Madrid' };
+
+  const res = await calendar.events.update({ calendarId, eventId, resource: ev });
+  return res.data;
+}
+
+module.exports = { createAppointment, getAvailableSlots, searchAppointments, cancelAppointment, updateAppointment };

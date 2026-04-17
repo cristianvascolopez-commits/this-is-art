@@ -1,6 +1,6 @@
 const express = require('express');
 const router  = express.Router();
-const { createAppointment, getAvailableSlots } = require('../services/calendarService');
+const { createAppointment, getAvailableSlots, searchAppointments, cancelAppointment, updateAppointment } = require('../services/calendarService');
 const { sendConfirmation } = require('../services/emailService');
 
 /* POST /api/calendar/create — Crear una cita manualmente */
@@ -50,6 +50,43 @@ router.get('/slots', async (req, res) => {
     return res.json({ date, busy: busy || [] });
   } catch (err) {
     console.error('[Calendar] Error slots:', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+/* GET /api/calendar/search?q=nombre_o_telefono */
+router.get('/search', async (req, res) => {
+  const { q } = req.query;
+  if (!q) return res.status(400).json({ error: 'Parámetro "q" requerido.' });
+  try {
+    const events = await searchAppointments(q);
+    return res.json({ events });
+  } catch (err) {
+    console.error('[Calendar] Error búsqueda:', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+/* DELETE /api/calendar/cancel/:eventId */
+router.delete('/cancel/:eventId', async (req, res) => {
+  try {
+    await cancelAppointment(req.params.eventId);
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('[Calendar] Error cancelar:', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+/* PUT /api/calendar/update/:eventId */
+router.put('/update/:eventId', async (req, res) => {
+  const { fecha, hora } = req.body;
+  if (!fecha || !hora) return res.status(400).json({ error: 'Faltan fecha y hora.' });
+  try {
+    const ev = await updateAppointment(req.params.eventId, { fecha, hora });
+    return res.json({ success: true, event: ev });
+  } catch (err) {
+    console.error('[Calendar] Error actualizar:', err.message);
     return res.status(500).json({ error: err.message });
   }
 });
