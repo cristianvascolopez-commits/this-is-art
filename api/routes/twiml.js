@@ -15,30 +15,10 @@ router.get('/confirmacion', (req, res) => {
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Say voice="alice" language="es-ES">
-    <prosody rate="90%" pitch="+1%">
-      Hola ${nombre}, qué tal.
-      <break time="600ms"/>
-      Te llamamos desde THIS IS ART, tu barbería de confianza en Terrassa.
-      <break time="500ms"/>
-      Te confirmamos que tu cita está reservada, y te esperamos con muchas ganas.
-      <break time="600ms"/>
-      Tienes el <emphasis level="moderate">${fechaFormateada}</emphasis>, a <emphasis level="moderate">${horaVoz} en punto</emphasis>.
-      <break time="400ms"/>
-      El servicio que has elegido es ${servicio}.
-      <break time="600ms"/>
-      Nos encontramos en el Carrer de Volta, número ochenta y dos, aquí en Terrassa.
-      <break time="400ms"/>
-      Si necesitas cambiar o cancelar tu cita, llámanos al noventa y tres, ciento ochenta y nueve, cuarenta, setenta y ocho.
-      <break time="600ms"/>
-      Muchas gracias por confiar en THIS IS ART, ${nombre}.
-      <break time="300ms"/>
-      ¡Te esperamos pronto!
-    </prosody>
-  </Say>
+  <Say voice="alice" language="es-ES">Hola ${nombre}. Te llamamos desde THIS IS ART, tu barbería de confianza en Terrassa. Tu cita está confirmada para el ${fechaFormateada}, a ${horaVoz}. El servicio elegido es ${servicio}. Estamos en el Carrer de Volta, ochenta y dos. Si necesitas cambiar la cita llámanos al noventa y tres, ciento ochenta y nueve, cuarenta, setenta y ocho. Muchas gracias, ${nombre}. Hasta pronto.</Say>
 </Response>`;
 
-  res.set('Content-Type', 'text/xml');
+  res.set('Content-Type', 'text/xml; charset=utf-8');
   res.send(xml);
 });
 
