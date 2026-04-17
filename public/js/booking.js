@@ -62,7 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const empleado = document.getElementById('bEmpleado').value;
     const fecha    = document.getElementById('bFecha').value;
     const hora     = document.getElementById('bHora').value;
-    const telefono = document.getElementById('bTelefono').value.trim();
+    let telefono = document.getElementById('bTelefono').value.trim().replace(/\s/g, '');
+    if (telefono && !telefono.startsWith('+')) telefono = '+34' + telefono;
     const email    = document.getElementById('bEmail')?.value.trim() || '';
 
     const day = new Date(fecha).getDay();
@@ -131,7 +132,8 @@ function switchBookingTab(tab) {
 const API = 'https://this-is-art-app-production.up.railway.app';
 
 async function buscarCitas() {
-  const q   = document.getElementById('gBuscar').value.trim();
+  let q     = document.getElementById('gBuscar').value.trim().replace(/\s/g, '');
+  if (q && /^\+?[\d]+$/.test(q) && !q.startsWith('+')) q = '+34' + q;
   const res = document.getElementById('gResultados');
   if (!q) { res.innerHTML = '<p style="color:#f87171;font-size:0.82rem;">Escribe un nombre o teléfono.</p>'; return; }
 
