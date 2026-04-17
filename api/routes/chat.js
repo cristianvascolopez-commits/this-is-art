@@ -58,11 +58,17 @@ router.post('/', async (req, res) => {
     if (buscarMatch) {
       try {
         const { nombre, telefono } = JSON.parse(buscarMatch[1]);
-        const query = `${nombre} ${telefono || ''}`.trim();
-        const events = await searchAppointments(query);
-        let injection = '';
+
+        // Buscar primero por nombre; si no hay resultados, por teléfono
+        let events = await searchAppointments(nombre);
+        if (events.length === 0 && telefono) {
+          events = await searchAppointments(telefono);
+        }
+
+        // Construir contexto legible para una segunda llamada a Claude
+        let contexto;
         if (events.length === 0) {
-          injection = '\n\n[Sistema: No encontré citas próximas con esos datos. Pide al cliente que verifique nombre y teléfono.]';
+          contexto = `No encontré ninguna cita próxima para "${nombre}" (tel: ${telefono || 'no indicado'}). Informa al cliente de forma amable y sugiere verificar los datos o llamar al 93 189 40 78.`;
         } else {
           const lista = events.map((e, i) => {
             const dt  = new Date(e.start);
@@ -71,11 +77,22 @@ router.post('/', async (req, res) => {
             const svc = e.summary.replace('✂ THIS IS ART — ', '');
             return `${i + 1}. ${svc} — ${dia} a las ${hr} [ID:${e.id}]`;
           }).join('\n');
-          injection = `\n\n[Sistema — citas encontradas:\n${lista}\nUsa el ID correspondiente para cancelar o modificar.]`;
+          contexto = `Citas encontradas para ${nombre}:\n${lista}\nMuéstraselas al cliente de forma clara y pregunta qué quiere hacer (cancelar o cambiar). Conserva los [ID:...] en tu respuesta para poder actuar sobre ellos.`;
         }
-        rawReply = rawReply.replace(/\[BUSCAR_CITA:\{.*?\}\]/s, '').trim() + injection;
+
+        // Segunda llamada a Claude con el contexto de búsqueda
+        const primeraRespuesta = rawReply.replace(/\[BUSCAR_CITA:\{.*?\}\]/s, '').trim();
+        const historialExtendido = [
+          ...history,
+          { role: 'user',      content: message },
+          { role: 'assistant', content: primeraRespuesta || 'Buscando tu cita...' },
+          { role: 'user',      content: `[Resultado búsqueda sistema]: ${contexto}` },
+        ];
+        rawReply = await askClaude('[Resultado búsqueda sistema recibido]', historialExtendido);
+
       } catch (e) {
         console.error('[Chat] Error búsqueda cita:', e.message);
+        rawReply = rawReply.replace(/\[BUSCAR_CITA:\{.*?\}\]/s, '').trim();
       }
     }
 
