@@ -29,10 +29,10 @@ async function sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono }) 
   const [h, m]  = hora.split(':');
   const horaVoz = m === '00' ? `las ${h}` : `las ${h} y ${m}`;
 
-  // Mensaje de voz — Google Neural en español de España (más natural)
+  // Mensaje de voz — Polly.Lucia (español de España, disponible en Twilio estándar)
   const mensaje = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Say language="es-ES" voice="Google.es-ES-Neural2-A">
+  <Say voice="Polly.Lucia">
 Hola ${nombre}, ¿qué tal?
 Te llamamos desde THIS IS ART, tu barbería de confianza en Terrassa.
 Te confirmamos que tu cita está reservada y te esperamos con muchas ganas.
