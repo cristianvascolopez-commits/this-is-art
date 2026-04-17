@@ -1,0 +1,108 @@
+/* Reveal al hacer scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* Pulso en botones CTA */
+@keyframes pulse-border {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.3); }
+  50%       { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+}
+
+.btn-pulse {
+  animation: pulse-border 2.5s ease infinite;
+}
+
+/* Línea animada hero */
+@keyframes line-expand {
+  from { width: 0; }
+  to   { width: 80px; }
+}
+
+.hero-line {
+  display: block;
+  height: 2px;
+  background: var(--color-accent);
+  margin: var(--space-6) auto;
+  animation: line-expand 1s ease 0.5s both;
+}
+
+/* Destello de estrellas */
+@keyframes star-glow {
+  0%, 100% { color: var(--color-gold); text-shadow: none; }
+  50%       { color: var(--color-gold); text-shadow: 0 0 8px var(--color-gold); }
+}
+
+.stars-animated {
+  animation: star-glow 3s ease-in-out infinite;
+}
+
+/* Fade in */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease both;
+}
+
+/* Slide desde abajo */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.slide-up {
+  animation: slideUp 0.6s ease both;
+}
+
+/* Blink cursor chatbot */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: currentColor;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink 0.8s step-end infinite;
+}
+
+/* Spinner de carga */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* Carrusel de reseñas */
+@keyframes slide-carousel {
+  0%, 30%  { transform: translateX(0); opacity: 1; }
+  35%, 95% { transform: translateX(-20px); opacity: 0; }
+  100%     { transform: translateX(0); opacity: 1; }
+}

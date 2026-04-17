@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="THIS IS ART – Barbería de élite en Terrassa. Cortes de precisión, arreglo de barba, coloración y más. Reserva online o llama al 93 189 40 78.">
+  <meta name="keywords" content="barbería Terrassa, corte pelo Terrassa, barba Terrassa, THIS IS ART barbería">
+  <meta property="og:title" content="THIS IS ART – Barbería · Terrassa">
+  <meta property="og:description" content="Arte en cada corte. Barbería profesional en Terrassa con más de 13 años de experiencia.">
+  <title>THIS IS ART – Barbería · Terrassa</title>
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/css/reset.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/animations.css">
+  <link rel="stylesheet" href="/css/chat.css">
+  <link rel="stylesheet" href="/css/booking.css">
+</head>
+<body>
+
+  <!-- ========== NAVEGACIÓN ========== -->
+  <nav class="nav" id="nav">
+    <a href="#hero" class="nav-logo">THIS IS <span>ART</span></a>
+    <div class="nav-links">
+      <a href="#about">Nosotros</a>
+      <a href="#services">Servicios</a>
+      <a href="#gallery">Galería</a>
+      <a href="#reviews">Reseñas</a>
+      <a href="#location">Cómo llegar</a>
+      <a href="#" onclick="openBooking();return false;" class="btn btn-primary btn-pulse">
+        ✂ Reservar
+      </a>
+    </div>
+    <button class="nav-hamburger" id="hamburger" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MENÚ MÓVIL -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about" class="mobile-link">Nosotros</a>
+    <a href="#services" class="mobile-link">Servicios</a>
+    <a href="#gallery" class="mobile-link">Galería</a>
+    <a href="#reviews" class="mobile-link">Reseñas</a>
+    <a href="#location" class="mobile-link">Cómo llegar</a>
+    <a href="https://booksy.com/es-es/117752_this-is-art_barberia_133226_terrassa" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:1rem;">
+      ✂ Reservar ahora
+    </a>
+  </div>
+
+  <!-- ========== HERO ========== -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Barbería · Terrassa · Est. 2020</p>
+      <h1 class="hero-title">
+        THIS IS
+        <span class="art">ART</span>
+      </h1>
+      <span class="hero-line"></span>
+      <p class="hero-tagline">Cortes de precisión &nbsp;·&nbsp; Barbas perfectas &nbsp;·&nbsp; Tu estilo, nuestro arte</p>
+      <div class="hero-actions">
+        <a href="#" onclick="openBooking();return false;" class="btn btn-primary btn-pulse">
+          ✂ &nbsp;Reservar cita online
+        </a>
+        <a href="#services" class="btn btn-outline">Ver servicios</a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <div class="hero-scroll-line"></div>
+      scroll
+    </div>
+  </section>
+
+  <!-- ========== RATINGS BAND ========== -->
+  <section id="ratings">
+    <div class="container">
+      <div class="ratings-grid">
+        <div class="rating-badge reveal">
+          <span class="rating-source">Google Maps</span>
+          <span class="rating-score">4.8</span>
+          <div class="rating-stars stars-animated">★★★★★</div>
+          <span class="rating-count">183 opiniones verificadas</span>
+        </div>
+        <div class="ratings-divider"></div>
+        <div class="rating-badge reveal reveal-delay-1">
+          <span class="rating-source">Booksy</span>
+          <span class="rating-score">4.9</span>
+          <div class="rating-stars stars-animated">★★★★★</div>
+          <span class="rating-count">780 opiniones verificadas</span>
+        </div>
+        <div class="ratings-divider"></div>
+        <div class="rating-badge reveal reveal-delay-2">
+          <span class="rating-source">Años de confianza</span>
+          <span class="rating-score">13+</span>
+          <div class="rating-stars" style="color:var(--color-text-muted);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;margin-top:4px;">David, maestro barbero</div>
+          <span class="rating-count">Desde 2011 transformando estilos</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SOBRE NOSOTROS ========== -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-image-wrap reveal">
+          <div class="about-image-placeholder">
+            <div style="font-family:var(--font-display);font-size:8rem;color:var(--color-border-light);line-height:1;">✂</div>
+            <p style="font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;">THIS IS ART<br>Barbería · Terrassa</p>
+          </div>
+        </div>
+        <div class="about-content reveal reveal-delay-2">
+          <span class="section-tag">Sobre nosotros</span>
+          <h2 class="section-title">Arte en cada corte</h2>
+          <p class="section-subtitle">
+            En THIS IS ART creemos que cada corte es una obra de arte. David, con más de 13 años de experiencia,
+            y su equipo de profesionales están aquí para transformar tu imagen con precisión, estilo y dedicación.
+            Ubicados en el corazón de Terrassa, somos mucho más que una barbería: somos tu espacio de confianza.
+          </p>
+          <p class="section-subtitle" style="margin-top:1rem;">
+            Desde cortes clásicos hasta los estilos más modernos, trabajamos con las mejores técnicas y productos
+            para que salgas sintiéndote único. Reserva cita o pásate por el local.
+          </p>
+          <div class="about-stats">
+            <div class="stat-item reveal reveal-delay-1">
+              <span class="stat-number">13+</span>
+              <span class="stat-label">Años de experiencia</span>
+            </div>
+            <div class="stat-item reveal reveal-delay-2">
+              <span class="stat-number">963+</span>
+              <span class="stat-label">Reseñas 5 estrellas</span>
+            </div>
+            <div class="stat-item reveal reveal-delay-3">
+              <span class="stat-number">2.7K</span>
+              <span class="stat-label">Seguidores Instagram</span>
+            </div>
+            <div class="stat-item reveal reveal-delay-4">
+              <span class="stat-number">4.9</span>
+              <span class="stat-label">Puntuación media</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SERVICIOS ========== -->
+  <section id="services">
+    <div class="container">
+      <div class="services-header">
+        <div>
+          <span class="section-tag">Nuestros servicios</span>
+          <h2 class="section-title">Lo que hacemos</h2>
+        </div>
+        <a href="https://booksy.com/es-es/117752_this-is-art_barberia_133226_terrassa" target="_blank" rel="noopener" class="btn btn-outline">
+          Ver todos en Booksy →
+        </a>
+      </div>
+      <div class="services-grid">
+        <div class="service-card featured reveal">
+          <span class="service-name">Corte de pelo</span>
+          <p style="color:var(--color-text-muted);font-size:0.85rem;line-height:1.6;">Corte personalizado adaptado a tu estilo y tipo de cabello con acabado impecable.</p>
+          <div class="service-meta">
+            <span class="service-price">15,95 €</span>
+            <span class="service-duration">⏱ 30 min</span>
+          </div>
+          <a href="#" onclick="openBooking(this.closest('.service-card').querySelector('.service-name').textContent);return false;" class="service-book-btn">
+            Reservar ahora
+          </a>
+        </div>
+        <div class="service-card featured reveal reveal-delay-1">
+          <span class="service-name">Corte + Barba</span>
+          <p style="color:var(--color-text-muted);font-size:0.85rem;line-height:1.6;">El combo perfecto: corte de pelo más arreglo completo de barba en una sola visita.</p>
+          <div class="service-meta">
+            <span class="service-price">22,95 €</span>
+            <span class="service-duration">⏱ 45 min</span>
+          </div>
+          <a href="#" onclick="openBooking(this.closest('.service-card').querySelector('.service-name').textContent);return false;" class="service-book-btn">
+            Reservar ahora
+          </a>
+        </div>
+        <div class="service-card reveal reveal-delay-2">
+          <span class="service-name">Corte Niño</span>
+          <p style="color:var(--color-text-muted);font-size:0.85rem;line-height:1.6;">Para los más pequeños (hasta 10 años). Atención especial con paciencia y cariño.</p>
+          <div class="service-meta">
+            <span class="service-price">12,50 €</span>
+            <span class="service-duration">⏱ 30 min</span>
+          </div>
+          <a href="#" onclick="openBooking(this.closest('.service-card').querySelector('.service-name').textContent);return false;" class="service-book-btn">
+            Reservar ahora
+          </a>
+        </div>
+        <div class="service-card reveal reveal-delay-1">
+          <span class="service-name">Barba</span>
+          <p style="color:var(--color-text-muted);font-size:0.85rem;line-height:1.6;">Rapar, dar forma o mantenimiento de barba. Afeitado con cuchilla o toallas calientes disponible.</p>
+          <div class="service-meta">
+            <span class="service-price">desde 8 €</span>
+            <span class="service-duration">⏱ 20–30 min</span>
+          </div>
+          <a href="#" onclick="openBooking(this.closest('.service-card').querySelector('.service-name').textContent);return false;" class="service-book-btn">
+            Reservar ahora
+          </a>
+        </div>
+        <div class="service-card reveal reveal-delay-2">
+          <span class="service-name">Color & Mechas</span>
+          <p style="color:var(--color-text-muted);font-size:0.85rem;line-height:1.6;">Coloración, decoloración, mechas y tinte de barba. Resultados profesionales garantizados.</p>
+          <div class="service-meta">
+            <span class="service-price">Consultar precio</span>
+            <span class="service-duration">⏱ variable</span>
+          </div>
+          <a href="#" onclick="openBooking(this.closest('.service-card').querySelector('.service-name').textContent);return false;" class="service-book-btn">
+            Reservar ahora
+          </a>
+        </div>
+        <div class="service-card reveal reveal-delay-3">
+          <span class="service-name">Mantenimiento</span>
+          <p style="color:var(--color-text-muted);font-size:0.85rem;line-height:1.6;">Corte solo laterales, recorte de cejas, masaje craneal y tratamientos capilares especializados.</p>
+          <div class="service-meta">
+            <span class="service-price">desde 8 €</span>
+            <span class="service-duration">⏱ 15 min</span>
+          </div>
+          <a href="#" onclick="openBooking(this.closest('.service-card').querySelector('.service-name').textContent);return false;" class="service-book-btn">
+            Reservar ahora
+          </a>
+        </div>
+      </div>
+      <!-- Servicios adicionales -->
+      <div class="services-more reveal" style="margin-top:2rem;padding:1.5rem;background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--border-radius);">
+        <p style="color:var(--color-text-muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.75rem;">También ofrecemos</p>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+          <span class="service-tag">Afeitado con cuchilla</span>
+          <span class="service-tag">Afeitado de cabeza</span>
+          <span class="service-tag">Alisado</span>
+          <span class="service-tag">Champú y acondicionador</span>
+          <span class="service-tag">Corte difuminado</span>
+          <span class="service-tag">Corte estilo militar</span>
+          <span class="service-tag">Pelo rizado</span>
+          <span class="service-tag">Paquetes para novios</span>
+          <span class="service-tag">Recorte de cejas</span>
+          <span class="service-tag">Teñido de cejas</span>
+          <span class="service-tag">Tratamiento capilar</span>
+          <span class="service-tag">Masaje craneal</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== GALERÍA ========== -->
+  <section id="gallery">
+    <div class="container">
+      <div class="gallery-intro">
+        <div>
+          <span class="section-tag">Nuestro trabajo</span>
+          <h2 class="section-title">Galería</h2>
+        </div>
+        <a href="https://www.instagram.com/davidfernandez_official/" target="_blank" rel="noopener" class="btn btn-outline">
+          Ver Instagram →
+        </a>
+      </div>
+      <div class="gallery-grid">
+        <a href="https://www.instagram.com/davidfernandez_official/" target="_blank" rel="noopener" class="gallery-item reveal">
+          <div class="gallery-placeholder" style="background:linear-gradient(135deg,var(--color-surface-2),var(--color-surface-3));">
+            <div><div style="font-size:3rem;">✂</div><div style="margin-top:0.5rem;font-size:0.8rem;">Corte de pelo</div></div>
+          </div>
+          <div class="gallery-overlay"><span>Ver en Instagram ↗</span></div>
+        </a>
+        <a href="https://www.instagram.com/davidfernandez_official/" target="_blank" rel="noopener" class="gallery-item reveal reveal-delay-1">
+          <div class="gallery-placeholder" style="background:linear-gradient(135deg,var(--color-surface-3),var(--color-surface-2));">
+            <div><div style="font-size:3rem;">🪒</div><div style="margin-top:0.5rem;font-size:0.8rem;">Arreglo barba</div></div>
+          </div>
+          <div class="gallery-overlay"><span>Ver en Instagram ↗</span></div>
+        </a>
+        <a href="https://www.instagram.com/davidfernandez_official/" target="_blank" rel="noopener" class="gallery-item reveal reveal-delay-2">
+          <div class="gallery-placeholder" style="background:linear-gradient(135deg,#1a1a1a,#111);">
+            <div><div style="font-size:3rem;">🎨</div><div style="margin-top:0.5rem;font-size:0.8rem;">Color & mechas</div></div>
+          </div>
+          <div class="gallery-overlay"><span>Ver en Instagram ↗</span></div>
+        </a>
+        <a href="https://www.instagram.com/davidfernandez_official/" target="_blank" rel="noopener" class="gallery-item reveal reveal-delay-1">
+          <div class="gallery-placeholder" style="background:linear-gradient(135deg,var(--color-surface-2),#0a0a0a);">
+            <div><div style="font-size:3rem;">💈</div><div style="margin-top:0.5rem;font-size:0.8rem;">Degradado</div></div>
+          </div>
+          <div class="gallery-overlay"><span>Ver en Instagram ↗</span></div>
+        </a>
+        <a href="https://www.instagram.com/thisisart_2020/" target="_blank" rel="noopener" class="gallery-item reveal reveal-delay-2">
+          <div class="gallery-placeholder" style="background:linear-gradient(135deg,#111,var(--color-surface-2));">
+            <div><div style="font-size:3rem;">⭐</div><div style="margin-top:0.5rem;font-size:0.8rem;">Tratamiento capilar</div></div>
+          </div>
+          <div class="gallery-overlay"><span>Ver en Instagram ↗</span></div>
+        </a>
+        <a href="https://www.instagram.com/thisisart_2020/" target="_blank" rel="noopener" class="gallery-item reveal reveal-delay-3">
+          <div class="gallery-placeholder" style="background:linear-gradient(135deg,var(--color-surface-3),#111);">
+            <div><div style="font-size:3rem;">👦</div><div style="margin-top:0.5rem;font-size:0.8rem;">Corte de niño</div></div>
+          </div>
+          <div class="gallery-overlay"><span>Ver en Instagram ↗</span></div>
+        </a>
+      </div>
+      <div style="text-align:center;margin-top:2rem;">
+        <a href="https://www.instagram.com/thisisart_2020/" target="_blank" rel="noopener" class="btn btn-outline">
+          📸 &nbsp;Seguir @thisisart_2020
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RESEÑAS ========== -->
+  <section id="reviews">
+    <div class="container">
+      <div class="reviews-header">
+        <span class="section-tag">Opiniones reales</span>
+        <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+        <p class="section-subtitle" style="margin:0 auto;">Más de 963 reseñas de 5 estrellas entre Google y Booksy</p>
+      </div>
+      <div class="reviews-carousel" id="reviewsCarousel">
+        <div class="review-card active">
+          <div class="review-stars stars-animated">★★★★★</div>
+          <p class="review-text">David es mi peluquero de confianza durante 13 años y su profesionalidad es impecable. Los cortes y el arreglo de barba siempre quedan perfectos, y su peluquería destaca por ser un lugar de referencia en Terrassa.</p>
+          <div>
+            <p class="review-author">Gegham Khachatryan</p>
+            <p class="review-source">Google Maps · ★★★★★ · hace 5 meses</p>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars stars-animated">★★★★★</div>
+          <p class="review-text">Pongo solo 5 estrellas porque no hay más. Tanto el trato, como el servicio, como el precio son de 10. Gran profesionalidad y buenos peluqueros barberos que te atienden de maravilla.</p>
+          <div>
+            <p class="review-author">Xtreme Hunters Iberica</p>
+            <p class="review-source">Google Maps · ★★★★★ · hace 7 meses</p>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars stars-animated">★★★★★</div>
+          <p class="review-text">Muy buen servicio, el personal es muy cálido, se nota la profesionalidad y quiero hacer una mención especial a David por su muy buen trato. 10/10, sitio muy recomendable.</p>
+          <div>
+            <p class="review-author">master_birelgo</p>
+            <p class="review-source">Google Maps · ★★★★★ · hace 3 meses</p>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars stars-animated">★★★★★</div>
+          <p class="review-text">Llevo años yendo y siempre salgo más que satisfecho. El ambiente es genial, David y su equipo son unos auténticos artistas. Muy recomendado para cualquiera que busque calidad y buen trato.</p>
+          <div>
+            <p class="review-author">Cliente Booksy</p>
+            <p class="review-source">Booksy · ★★★★★ · valoración verificada</p>
+          </div>
+        </div>
+      </div>
+      <div class="reviews-dots" id="reviewsDots"></div>
+      <div style="text-align:center;margin-top:2.5rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="https://www.google.com/maps/search/THIS+IS+ART+Terrassa+Carrer+de+Volta" target="_blank" rel="noopener" class="btn btn-outline">
+          ⭐ Ver reseñas en Google
+        </a>
+        <a href="https://booksy.com/es-es/117752_this-is-art_barberia_133226_terrassa" target="_blank" rel="noopener" class="btn btn-outline">
+          📋 Ver reseñas en Booksy
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CÓMO LLEGAR ========== -->
+  <section id="location">
+    <div class="container">
+      <span class="section-tag">Encuéntranos</span>
+      <h2 class="section-title" style="margin-bottom:3rem;">Cómo llegar</h2>
+      <div class="location-grid">
+        <div class="map-container reveal">
+          <iframe
+            src="https://maps.google.com/maps?q=Carrer+de+Volta+82+08224+Terrassa+Barcelona&output=embed&hl=es"
+            width="600"
+            height="420"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Ubicación THIS IS ART Barbería en Terrassa">
+          </iframe>
+        </div>
+        <div class="location-info reveal reveal-delay-1">
+          <div class="location-item">
+            <span class="location-icon">📍</span>
+            <div>
+              <p class="location-label">Dirección</p>
+              <p class="location-value">
+                Carrer de Volta, 82<br>08224 Terrassa, Barcelona
+              </p>
+            </div>
+          </div>
+          <div class="location-item">
+            <span class="location-icon">📞</span>
+            <div>
+              <p class="location-label">Teléfono</p>
+              <p class="location-value">
+                <a href="tel:+34931894078">93 189 40 78</a>
+              </p>
+            </div>
+          </div>
+          <div class="location-item">
+            <span class="location-icon">🅿️</span>
+            <div>
+              <p class="location-label">Aparcamiento</p>
+              <p class="location-value">Parking La Rasa — 30 minutos gratis</p>
+            </div>
+          </div>
+          <div class="location-item">
+            <span class="location-icon">🕐</span>
+            <div>
+              <p class="location-label">Horario de apertura</p>
+              <div class="hours-table" id="hoursTable">
+                <div class="hours-row" data-day="1"><span>Lunes</span><span>10:00 – 20:00</span></div>
+                <div class="hours-row" data-day="2"><span>Martes</span><span>10:00 – 20:00</span></div>
+                <div class="hours-row" data-day="3"><span>Miércoles</span><span>10:00 – 20:00</span></div>
+                <div class="hours-row" data-day="4"><span>Jueves</span><span>10:00 – 20:00</span></div>
+                <div class="hours-row" data-day="5"><span>Viernes</span><span>10:00 – 20:00</span></div>
+                <div class="hours-row" data-day="6"><span>Sábado</span><span>10:00 – 20:00</span></div>
+                <div class="hours-row" data-day="0"><span>Domingo</span><span class="hours-closed">Cerrado</span></div>
+              </div>
+            </div>
+          </div>
+          <a
+            href="https://www.google.com/maps/dir/?api=1&destination=Carrer+de+Volta,+82,+08224+Terrassa,+Barcelona"
+            target="_blank"
+            rel="noopener"
+            class="btn btn-primary"
+            style="width:100%;justify-content:center;margin-top:0.5rem;">
+            📍 &nbsp;Abrir ruta en Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== REDES SOCIALES ========== -->
+  <section id="social">
+    <div class="container">
+      <span class="section-tag">Síguenos</span>
+      <h2 class="section-title">Redes sociales</h2>
+      <p class="section-subtitle" style="margin:0 auto 3rem;">Síguenos para inspiración diaria, novedades y promociones exclusivas.</p>
+      <div class="social-grid">
+        <a href="https://www.instagram.com/davidfernandez_official/" target="_blank" rel="noopener" class="social-card reveal">
+          <div class="social-icon">📸</div>
+          <span class="social-platform">Instagram · David</span>
+          <span class="social-handle">@davidfernandez_official</span>
+          <span class="social-followers">2.700+ seguidores</span>
+          <span class="social-cta">Seguir en Instagram →</span>
+        </a>
+        <a href="https://www.instagram.com/thisisart_2020/" target="_blank" rel="noopener" class="social-card reveal reveal-delay-1">
+          <div class="social-icon">💈</div>
+          <span class="social-platform">Instagram · Barbería</span>
+          <span class="social-handle">@thisisart_2020</span>
+          <span class="social-followers">Galería del local y trabajos</span>
+          <span class="social-cta">Seguir en Instagram →</span>
+        </a>
+        <a href="https://booksy.com/es-es/117752_this-is-art_barberia_133226_terrassa" target="_blank" rel="noopener" class="social-card reveal reveal-delay-2">
+          <div class="social-icon">📅</div>
+          <span class="social-platform">Booksy · Reservas</span>
+          <span class="social-handle">THIS IS ART</span>
+          <span class="social-followers">4.95 ★ · 780 reseñas</span>
+          <span class="social-cta">Reservar cita →</span>
+        </a>
+        <a href="https://www.google.com/maps/search/THIS+IS+ART+Terrassa+Carrer+de+Volta" target="_blank" rel="noopener" class="social-card reveal reveal-delay-3">
+          <div class="social-icon">⭐</div>
+          <span class="social-platform">Google Maps</span>
+          <span class="social-handle">THIS IS ART</span>
+          <span class="social-followers">4.8 ★ · 183 reseñas</span>
+          <span class="social-cta">Ver en Google →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACTO CTA ========== -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-inner">
+        <span class="section-tag">Contáctanos</span>
+        <h2 class="section-title">¿Listo para tu<br>próxima visita?</h2>
+        <a href="tel:+34931894078" class="contact-phone">93 189 40 78</a>
+        <p style="color:var(--color-text-muted);font-size:0.85rem;margin-bottom:0.5rem;">O reserva online 24/7 desde Booksy</p>
+        <div class="contact-actions">
+          <a href="#" onclick="openBooking();return false;" class="btn btn-primary btn-pulse">
+            ✂ &nbsp;Reservar ahora
+          </a>
+          <a href="tel:+34931894078" class="btn btn-outline">📞 Llamar</a>
+          <button onclick="document.getElementById('chatToggle').click()" class="btn btn-outline">
+            💬 Chat con nosotros
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-logo">THIS IS ART</div>
+          <p class="footer-copy" style="margin-top:0.5rem;">Carrer de Volta, 82 &nbsp;·&nbsp; 08224 Terrassa &nbsp;·&nbsp; 93 189 40 78</p>
+        </div>
+        <div class="footer-links">
+          <a href="#services">Servicios</a>
+          <a href="#reviews">Reseñas</a>
+          <a href="#location">Cómo llegar</a>
+          <a href="https://www.instagram.com/thisisart_2020/" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://booksy.com/es-es/117752_this-is-art_barberia_133226_terrassa" target="_blank" rel="noopener">Booksy</a>
+        </div>
+        <p class="footer-copy">© 2024 THIS IS ART &nbsp;·&nbsp; Todos los derechos reservados</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== CHAT WIDGET ========== -->
+  <div class="chat-widget" id="chatWidget">
+    <button class="chat-toggle" id="chatToggle" aria-label="Abrir asistente">
+      <span class="chat-toggle-icon">💬</span>
+      <span class="chat-toggle-close" style="display:none;">✕</span>
+    </button>
+    <div class="chat-panel" id="chatPanel" style="display:none;">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <div class="chat-avatar">✂</div>
+          <div>
+            <p class="chat-name">THIS IS ART</p>
+            <p class="chat-status"><span class="chat-dot">●</span> Asistente online</p>
+          </div>
+        </div>
+        <button class="chat-close-btn" id="chatCloseBtn" aria-label="Cerrar chat">✕</button>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-msg bot">
+          <p>¡Hola! 👋 Soy el asistente virtual de <strong>THIS IS ART</strong>. Puedo ayudarte con:</p>
+          <ul class="chat-welcome-list">
+            <li>📅 Agendar una cita</li>
+            <li>💈 Servicios y precios</li>
+            <li>📍 Cómo llegar al local</li>
+            <li>🕐 Horarios de apertura</li>
+          </ul>
+          <p style="margin-top:0.5rem;">¿En qué puedo ayudarte hoy?</p>
+        </div>
+      </div>
+      <div class="chat-quick-btns" id="chatQuickBtns">
+        <button class="chat-quick-btn" data-msg="Quiero reservar una cita">📅 Reservar cita</button>
+        <button class="chat-quick-btn" data-msg="¿Cuáles son los precios?">💰 Precios</button>
+        <button class="chat-quick-btn" data-msg="¿Cuál es el horario?">🕐 Horario</button>
+        <button class="chat-quick-btn" data-msg="¿Cómo llego a la barbería?">📍 Cómo llegar</button>
+      </div>
+      <div class="chat-input-row">
+        <input
+          type="text"
+          id="chatInput"
+          placeholder="Escribe tu mensaje..."
+          autocomplete="off"
+          maxlength="500"
+          aria-label="Mensaje para el asistente">
+        <button id="chatSend" aria-label="Enviar mensaje">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODAL RESERVA GOOGLE CALENDAR ========== -->
+  <div class="booking-overlay" id="bookingOverlay">
+    <div class="booking-modal" id="bookingModal">
+      <button class="booking-close" id="bookingClose">✕</button>
+      <div class="booking-header">
+        <div class="booking-icon">✂</div>
+        <h2 class="booking-title">Reservar cita</h2>
+        <p class="booking-subtitle">THIS IS ART · Terrassa</p>
+      </div>
+      <form id="bookingForm" class="booking-form">
+        <div class="booking-field">
+          <label>Nombre completo *</label>
+          <input type="text" id="bNombre" placeholder="Tu nombre" required maxlength="100">
+        </div>
+        <div class="booking-field">
+          <label>Servicio *</label>
+          <select id="bServicio" required>
+            <option value="">Selecciona un servicio...</option>
+            <option value="Corte de pelo (15,95€)">✂ Corte de pelo — 15,95 €</option>
+            <option value="Corte de pelo + barba (22,95€)">✂ Corte + Barba — 22,95 €</option>
+            <option value="Corte de niño hasta 10 años (12,50€)">👦 Corte de niño — 12,50 €</option>
+            <option value="Barba (rapar)">🪒 Barba (rapar)</option>
+            <option value="Barba (rapar y dar forma)">🪒 Barba (dar forma)</option>
+            <option value="Recorte de barba">🪒 Recorte de barba</option>
+            <option value="Color / Coloración capilar">🎨 Color / Coloración</option>
+            <option value="Decoloración">🎨 Decoloración</option>
+            <option value="Mechas">🎨 Mechas</option>
+            <option value="Corte de mantenimiento laterales">✂ Mantenimiento laterales</option>
+            <option value="Afeitado con cuchilla">🪒 Afeitado con cuchilla</option>
+            <option value="Masaje craneal">💆 Masaje craneal</option>
+            <option value="Tratamiento capilar">💊 Tratamiento capilar</option>
+            <option value="Paquete novios">💍 Paquete novios</option>
+          </select>
+        </div>
+        <div class="booking-row">
+          <div class="booking-field">
+            <label>Fecha *</label>
+            <input type="date" id="bFecha" required>
+          </div>
+          <div class="booking-field">
+            <label>Hora *</label>
+            <select id="bHora" required>
+              <option value="">Hora...</option>
+              <option value="10:00">10:00</option>
+              <option value="10:30">10:30</option>
+              <option value="11:00">11:00</option>
+              <option value="11:30">11:30</option>
+              <option value="12:00">12:00</option>
+              <option value="12:30">12:30</option>
+              <option value="13:00">13:00</option>
+              <option value="13:30">13:30</option>
+              <option value="16:00">16:00</option>
+              <option value="16:30">16:30</option>
+              <option value="17:00">17:00</option>
+              <option value="17:30">17:30</option>
+              <option value="18:00">18:00</option>
+              <option value="18:30">18:30</option>
+              <option value="19:00">19:00</option>
+              <option value="19:30">19:30</option>
+            </select>
+          </div>
+        </div>
+        <div class="booking-field">
+          <label>Teléfono de contacto *</label>
+          <input type="tel" id="bTelefono" placeholder="6XX XXX XXX" required maxlength="20">
+        </div>
+        <div class="booking-msg" id="bookingMsg"></div>
+        <button type="submit" class="booking-submit" id="bookingSubmit">
+          📅 Confirmar cita en Google Calendar
+        </button>
+        <p class="booking-note">También puedes reservar en <a href="https://booksy.com/es-es/117752_this-is-art_barberia_133226_terrassa" target="_blank">Booksy</a> o llamar al <a href="tel:+34931894078">93 189 40 78</a></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/chat.js"></script>
+  <script src="/js/booking.js"></script>
+</body>
+</html>

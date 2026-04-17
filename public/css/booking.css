@@ -1,0 +1,202 @@
+/* =====================
+   MODAL DE RESERVA
+   ===================== */
+
+.booking-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-base);
+  backdrop-filter: blur(4px);
+}
+
+.booking-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.booking-modal {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-8);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.3s ease;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.booking-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all var(--transition-fast);
+}
+
+.booking-close:hover {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border-color: var(--color-accent);
+}
+
+.booking-header {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.booking-icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-3);
+}
+
+.booking-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--color-accent);
+  letter-spacing: 0.05em;
+}
+
+.booking-subtitle {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: var(--space-1);
+}
+
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.booking-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.booking-field label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.booking-field input,
+.booking-field select {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color var(--transition-fast);
+  width: 100%;
+}
+
+.booking-field input:focus,
+.booking-field select:focus {
+  border-color: var(--color-accent);
+}
+
+.booking-field select option {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+
+.booking-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.booking-msg {
+  font-size: 0.85rem;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--border-radius);
+  text-align: center;
+  min-height: 0;
+  transition: all var(--transition-base);
+}
+
+.booking-msg.success {
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  color: #4ade80;
+}
+
+.booking-msg.error {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: #f87171;
+}
+
+.booking-submit {
+  width: 100%;
+  padding: var(--space-4);
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border: none;
+  border-radius: var(--border-radius);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  margin-top: var(--space-2);
+}
+
+.booking-submit:hover:not(:disabled) {
+  background: var(--color-accent-dim);
+  transform: translateY(-1px);
+}
+
+.booking-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.booking-note {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+}
+
+.booking-note a {
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  .booking-modal { padding: var(--space-6); }
+  .booking-row { grid-template-columns: 1fr; }
+}
