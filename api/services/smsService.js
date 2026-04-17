@@ -53,7 +53,7 @@ async function sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono }) 
 
   const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Say voice="Polly.Conchita">
+  <Say voice="alice" language="es-ES">
 Hola ${nombre}, ¿qué tal?
 Te llamamos desde THIS IS ART, tu barbería de confianza en Terrassa.
 Te confirmamos que tu cita está reservada y te esperamos con muchas ganas.
