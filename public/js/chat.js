@@ -86,7 +86,7 @@ const Chat = (() => {
     const typingEl = showTyping();
 
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch('https://this-is-art-app-production.up.railway.app/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

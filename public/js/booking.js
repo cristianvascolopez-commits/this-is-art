@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     msg.textContent = '';
 
     try {
-      const res = await fetch('/api/calendar/create', {
+      const res = await fetch('https://this-is-art-app-production.up.railway.app/api/calendar/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombre, servicio, fecha, hora, telefono }),

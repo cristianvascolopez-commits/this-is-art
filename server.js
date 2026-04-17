@@ -26,7 +26,10 @@ app.use(helmet({
   },
 }));
 
-app.use(cors());
+app.use(cors({
+  origin: ['https://criped.es', 'https://www.criped.es', 'http://localhost:3000'],
+  credentials: true,
+}));
 app.use(express.json({ limit: '1mb' }));
 
 const limiter = rateLimit({
