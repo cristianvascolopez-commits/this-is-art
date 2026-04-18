@@ -90,9 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (res.ok && data.success) {
         localStorage.setItem('tia_cliente', JSON.stringify({ nombre, telefono, email }));
-        showMsg(`✅ ¡Cita confirmada! ${nombre}, te esperamos el ${formatDate(fecha)} a las ${hora}${empleado ? ' con ' + empleado : ''}. ¡Hasta pronto!`, 'success');
+        const ticketInfo = data.ticket ? ` · Ticket <strong>${data.ticket}</strong>` : '';
+        showMsg(`✅ ¡Cita confirmada! ${nombre}, te esperamos el ${formatDate(fecha)} a las ${hora}${empleado ? ' con ' + empleado : ''}${ticketInfo}. ¡Hasta pronto!`, 'success');
         btn.textContent = '✅ ¡Cita confirmada!';
-        setTimeout(closeBooking, 4000);
+        setTimeout(closeBooking, 5000);
       } else {
         showMsg(data.error || 'Error al agendar. Llámanos al 93 189 40 78.', 'error');
         btn.disabled = false;

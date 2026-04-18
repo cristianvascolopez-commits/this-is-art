@@ -31,13 +31,14 @@ router.post('/create', async (req, res) => {
     sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono })
       .catch(err => console.warn('[SMS] No se pudo enviar:', err.message));
 
-    appendCita({ nombre, telefono, servicio, fecha, hora, barbero: req.body.barbero || '', emailCliente: email || '' })
-      .catch(() => {});
+    const ticket = await appendCita({ nombre, telefono, servicio, fecha, hora, barbero: req.body.barbero || '', emailCliente: email || '' })
+      .catch(() => null);
 
     return res.json({
       success: true,
       eventId: event.id,
       htmlLink: event.htmlLink,
+      ticket:  ticket || null,
       message: `Cita para ${nombre} el ${fecha} a las ${hora} agendada correctamente.`,
     });
   } catch (err) {
