@@ -10,12 +10,12 @@
   <title>THIS IS ART – Barbería · Terrassa</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="shortcut icon" href="/favicon.svg">
-  <link rel="stylesheet" href="/css/variables.css?v=6">
-  <link rel="stylesheet" href="/css/reset.css?v=6">
-  <link rel="stylesheet" href="/css/main.css?v=6">
-  <link rel="stylesheet" href="/css/animations.css?v=6">
-  <link rel="stylesheet" href="/css/chat.css?v=6">
-  <link rel="stylesheet" href="/css/booking.css?v=6">
+  <link rel="stylesheet" href="/css/variables.css?v=7">
+  <link rel="stylesheet" href="/css/reset.css?v=7">
+  <link rel="stylesheet" href="/css/main.css?v=7">
+  <link rel="stylesheet" href="/css/animations.css?v=7">
+  <link rel="stylesheet" href="/css/chat.css?v=7">
+  <link rel="stylesheet" href="/css/booking.css?v=7">
 </head>
 <body>
 
@@ -833,10 +833,91 @@
     </div>
   </div>
 
-  <script src="/js/app.js?v=6"></script>
-  <script src="/js/chat.js?v=6"></script>
-  <script src="/js/booking.js?v=6"></script>
+  <!-- ===== LEAD MAGNET POPUP ===== -->
+  <div id="leadPopup" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;padding:1rem;">
+    <div style="background:#111;border:1px solid #2a2a2a;border-radius:16px;max-width:420px;width:100%;padding:2.5rem 2rem;position:relative;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.8);">
+      <button onclick="closeLead()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#555;font-size:1.4rem;cursor:pointer;line-height:1;" aria-label="Cerrar">✕</button>
+      <div style="font-size:2.5rem;margin-bottom:0.5rem;">✂</div>
+      <p style="font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:#555;margin:0 0 0.75rem;">Oferta exclusiva</p>
+      <h2 style="font-size:1.6rem;font-weight:800;color:#fff;margin:0 0 0.5rem;line-height:1.2;">10% de descuento<br>en tu primera visita</h2>
+      <p style="color:#888;font-size:0.9rem;line-height:1.6;margin:0.75rem 0 1.5rem;">Déjanos tu email y te enviamos el código ahora mismo. Sin compromiso.</p>
+      <form onsubmit="submitLead(event)" style="display:flex;flex-direction:column;gap:0.75rem;">
+        <input id="leadEmail" type="email" placeholder="tu@email.com" required
+          style="background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:0.85rem 1rem;color:#fff;font-size:0.95rem;outline:none;width:100%;box-sizing:border-box;">
+        <button id="leadBtn" type="submit"
+          style="background:#fff;color:#000;font-weight:800;font-size:0.9rem;letter-spacing:0.08em;text-transform:uppercase;border:none;border-radius:8px;padding:0.9rem;cursor:pointer;">
+          Quiero mi descuento
+        </button>
+      </form>
+      <p id="leadMsg" style="font-size:0.82rem;margin:0.75rem 0 0;min-height:1.2em;"></p>
+      <p style="color:#444;font-size:0.72rem;margin:1rem 0 0;">THIS IS ART · Carrer de Volta, 82 · Terrassa</p>
+    </div>
+  </div>
+
+  <script src="/js/app.js?v=7"></script>
+  <script src="/js/chat.js?v=7"></script>
+  <script src="/js/booking.js?v=7"></script>
   <script>
+    /* ===== LEAD MAGNET POPUP ===== */
+    (function() {
+      var STORAGE_KEY = 'tia_lead_shown';
+      if (localStorage.getItem(STORAGE_KEY)) return;
+
+      function showPopup() {
+        if (localStorage.getItem(STORAGE_KEY)) return;
+        document.getElementById('leadPopup').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+
+      // Mostrar tras 15 segundos
+      var timer = setTimeout(showPopup, 15000);
+
+      // Exit intent (escritorio): ratón sale por arriba
+      document.addEventListener('mouseleave', function(e) {
+        if (e.clientY < 10) { clearTimeout(timer); showPopup(); }
+      });
+    })();
+
+    function closeLead() {
+      document.getElementById('leadPopup').style.display = 'none';
+      document.body.style.overflow = '';
+      localStorage.setItem('tia_lead_shown', '1');
+    }
+
+    async function submitLead(e) {
+      e.preventDefault();
+      var btn  = document.getElementById('leadBtn');
+      var msg  = document.getElementById('leadMsg');
+      var email = document.getElementById('leadEmail').value.trim();
+      if (!email) return;
+
+      btn.disabled = true;
+      btn.textContent = 'Enviando...';
+
+      try {
+        var res = await fetch('https://this-is-art-app-production.up.railway.app/api/leads/email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        var data = await res.json();
+        if (data.ok) {
+          msg.textContent = '¡Listo! Revisa tu email — el descuento ya está en camino.';
+          msg.style.color = '#4ade80';
+          btn.style.display = 'none';
+          localStorage.setItem('tia_lead_shown', '1');
+          setTimeout(closeLead, 3000);
+        } else {
+          throw new Error('error');
+        }
+      } catch {
+        msg.textContent = 'Algo falló. Inténtalo de nuevo.';
+        msg.style.color = '#f87171';
+        btn.disabled = false;
+        btn.textContent = 'Quiero mi descuento';
+      }
+    }
+
     function openTeamLightbox(src, name) {
       const lb = document.getElementById('teamLightbox');
       document.getElementById('teamLightboxImg').src = src;

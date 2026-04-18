@@ -9,6 +9,7 @@ const chatRoutes = require('./api/routes/chat');
 const calendarRoutes = require('./api/routes/calendar');
 const cerebroRoutes = require('./api/routes/cerebro');
 const twimlRoutes = require('./api/routes/twiml');
+const leadsRoutes = require('./api/routes/leads');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -51,6 +52,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/calendar', calendarRoutes);
 app.use('/api/cerebro', cerebroRoutes);
 app.use('/api/twiml', twimlRoutes);
+app.use('/api/leads', leadsRoutes);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
