@@ -5,6 +5,7 @@ const { createAppointment, searchAppointments, cancelAppointment, updateAppointm
 const { sendConfirmation }    = require('../services/emailService');
 const { sendSmsConfirmation } = require('../services/smsService');
 const { saveMemory, saveConversation, extractMemorizable } = require('../services/cerebroService');
+const { appendCita } = require('../services/sheetsService');
 
 router.post('/', async (req, res) => {
   const { message, sessionId, history = [] } = req.body;
@@ -56,6 +57,16 @@ router.post('/', async (req, res) => {
           hora:     citaData.hora,
           telefono: citaData.telefono || '',
         }).catch(err => console.warn('[SMS] Error al enviar:', err.message));
+
+        appendCita({
+          nombre:       citaData.nombre,
+          telefono:     citaData.telefono   || '',
+          servicio:     citaData.servicio,
+          fecha:        citaData.fecha,
+          hora:         citaData.hora,
+          barbero:      citaData.barbero    || '',
+          emailCliente: citaData.email      || '',
+        }).catch(() => {});
 
       } catch (calErr) {
         console.error('[Calendar] Error al crear cita:', calErr.message);
