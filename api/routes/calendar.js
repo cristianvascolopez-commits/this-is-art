@@ -3,6 +3,7 @@ const router  = express.Router();
 const { createAppointment, getAvailableSlots, searchAppointments, cancelAppointment, updateAppointment } = require('../services/calendarService');
 const { sendConfirmation }    = require('../services/emailService');
 const { sendSmsConfirmation } = require('../services/smsService');
+const { appendCita }          = require('../services/sheetsService');
 
 /* POST /api/calendar/create — Crear una cita manualmente */
 router.post('/create', async (req, res) => {
@@ -29,6 +30,9 @@ router.post('/create', async (req, res) => {
 
     sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono })
       .catch(err => console.warn('[SMS] No se pudo enviar:', err.message));
+
+    appendCita({ nombre, telefono, servicio, fecha, hora, barbero: req.body.barbero || '', emailCliente: email || '' })
+      .catch(() => {});
 
     return res.json({
       success: true,

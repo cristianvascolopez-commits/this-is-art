@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
 const dns = require('dns');
+const { appendLead } = require('../services/sheetsService');
 
 dns.setDefaultResultOrder('ipv4first');
 
@@ -83,6 +84,7 @@ router.post('/email', async (req, res) => {
         </div>`,
     });
 
+    appendLead(email).catch(() => {});
     console.log('[Lead] Email capturado y enviado:', email);
     res.json({ ok: true });
   } catch (err) {
