@@ -3,8 +3,7 @@ const { randomUUID } = require('crypto');
 const ftp         = require('basic-ftp');
 const { Readable } = require('stream');
 
-// Cache temporal de audios (uuid → Buffer) — usado como fallback si FTP falla
-const audioStore = new Map();
+const audioStore = new Map(); // fallback en memoria
 
 function getClient() {
   return twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
@@ -20,43 +19,43 @@ function normalizarTelefono(telefono) {
   return t;
 }
 
-async function generarAudioElevenLabs(texto) {
-  const apiKey  = process.env.ELEVENLABS_API_KEY;
-  const voiceId = process.env.ELEVENLABS_VOICE_ID || 'XrExE9yKIg1WjnnlVkGX'; // Matilda — cálida y delicada
+// Genera MP3 con Google TTS WaveNet y lo sube a Hostinger
+async function generarAudioYSubir(texto) {
+  // 1 — Google TTS WaveNet es-ES-Wavenet-C (femenina, cálida)
+  const apiKey = process.env.GOOGLE_TTS_API_KEY;
+  if (!apiKey) throw new Error('Sin GOOGLE_TTS_API_KEY');
 
-  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-    method: 'POST',
-    headers: {
-      'xi-api-key':   apiKey,
-      'Content-Type': 'application/json',
-      'Accept':       'audio/mpeg',
-    },
-    body: JSON.stringify({
-      text:     texto,
-      model_id: 'eleven_multilingual_v2',
-      voice_settings: { stability: 0.38, similarity_boost: 0.82, style: 0.42, use_speaker_boost: true },
-    }),
-  });
+  const res = await fetch(
+    `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`,
+    {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        input:       { text: texto },
+        voice:       { languageCode: 'es-ES', name: 'es-ES-Wavenet-C' },
+        audioConfig: { audioEncoding: 'MP3', speakingRate: 0.92, pitch: 1.5 },
+      }),
+    }
+  );
+  if (!res.ok) throw new Error(`Google TTS ${res.status}: ${await res.text()}`);
 
-  if (!res.ok) throw new Error(`ElevenLabs ${res.status}: ${await res.text()}`);
+  const { audioContent } = await res.json();
+  const buffer = Buffer.from(audioContent, 'base64');
+  console.log('[TTS] Audio generado:', buffer.length, 'bytes');
 
-  const buffer = Buffer.from(await res.arrayBuffer());
-
-  // Subir a Hostinger FTP → URL pública y fiable para Twilio
+  // 2 — Subir a Hostinger → URL pública para Twilio
   const filename = `cita-${randomUUID()}.mp3`;
-  const client   = new ftp.Client();
-  client.ftp.verbose = false;
-  await client.access({
-    host:     '141.136.39.88',
-    user:     'u352984932',
-    password: 'Aa8812047616..',
-    secure:   false,
+  const ftpClient = new ftp.Client();
+  ftpClient.ftp.verbose = false;
+  await ftpClient.access({
+    host: '141.136.39.88', user: 'u352984932',
+    password: 'Aa8812047616..', secure: false,
   });
-  const stream = Readable.from(buffer);
-  await client.uploadFrom(stream, `/domains/criped.es/public_html/audio/${filename}`);
-  client.close();
+  await ftpClient.uploadFrom(Readable.from(buffer),
+    `/domains/criped.es/public_html/audio/${filename}`);
+  ftpClient.close();
 
-  // Limpiar el archivo de Hostinger tras 10 min (fire and forget)
+  // Limpiar archivo tras 10 min
   setTimeout(async () => {
     try {
       const c = new ftp.Client();
@@ -71,13 +70,9 @@ async function generarAudioElevenLabs(texto) {
 
 async function sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono }) {
   if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN || !process.env.TWILIO_PHONE_NUMBER) {
-    console.warn('[Twilio] Variables no configuradas');
-    return;
+    console.warn('[Twilio] Variables no configuradas'); return;
   }
-  if (!telefono) {
-    console.warn('[Twilio] No hay teléfono del cliente');
-    return;
-  }
+  if (!telefono) { console.warn('[Twilio] Sin teléfono'); return; }
 
   const client       = getClient();
   const telefonoNorm = normalizarTelefono(telefono);
@@ -85,7 +80,7 @@ async function sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono }) 
   const fechaFormateada = new Date(fecha + 'T12:00:00')
     .toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
-  // SMS de confirmación
+  // SMS
   const mensajeSms =
 `✂️ THIS IS ART — Reserva confirmada
 
@@ -102,58 +97,42 @@ Para cambios llama al 93 189 40 78.
 
   try {
     const msg = await client.messages.create({
-      body: mensajeSms,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to:   telefonoNorm,
+      body: mensajeSms, from: process.env.TWILIO_PHONE_NUMBER, to: telefonoNorm,
     });
-    console.log('[SMS] Enviado OK — SID:', msg.sid, '→', telefonoNorm);
+    console.log('[SMS] OK — SID:', msg.sid);
   } catch (err) {
     console.error('[SMS] Error:', err.message);
   }
 
-  // Llamada de voz con ElevenLabs (IA natural) → fallback a Polly.Lucia
+  // Llamada de voz
   const [h, m] = hora.split(':');
   const horaVoz = m === '00' ? `las ${h} en punto` : `las ${h} y ${m}`;
 
   const textoVoz =
-`¡Hola, ${nombre}! Te llamamos desde This Is Art, tu barbería de confianza aquí en Terrassa.
+`Hola, ${nombre}. Te llamamos desde This Is Art, tu barbería de confianza en Terrassa.
 
 Queremos confirmarte que tienes una cita reservada para el ${fechaFormateada}, a ${horaVoz}. El servicio que has elegido es ${servicio}.
 
-Nos encontramos en el Carrer de Volta, número ochenta y dos. Si necesitas hacer algún cambio o cancelar tu cita, llámanos al noventa y tres, ciento ochenta y nueve, cuarenta, setenta y ocho. Estaremos encantados de ayudarte.
+Nos encontramos en el Carrer de Volta, número ochenta y dos, en Terrassa. Si necesitas hacer algún cambio, llámanos al noventa y tres, ciento ochenta y nueve, cuarenta, setenta y ocho.
 
-Muchas gracias, ${nombre}. ¡Te esperamos con los brazos abiertos!`;
+Muchas gracias, ${nombre}. ¡Te esperamos pronto!`;
 
   let twiml;
-
   try {
-    if (!process.env.ELEVENLABS_API_KEY) throw new Error('Sin API key');
-    const audioUrl = await generarAudioElevenLabs(textoVoz);
+    const audioUrl = await generarAudioYSubir(textoVoz);
     twiml = `<Response><Play>${audioUrl}</Play></Response>`;
-    console.log('[ElevenLabs] Audio listo → URL:', audioUrl);
+    console.log('[TTS] Listo →', audioUrl);
   } catch (err) {
-    console.warn('[ElevenLabs] Fallo, usando Polly.Lucia:', err.message);
-    const n = sinAcentos(nombre);
-    const s = sinAcentos(servicio);
-    const f = sinAcentos(fechaFormateada);
-    twiml = `<Response>
-  <Say voice="Polly.Lucia">
-    Hola ${n}, <break time="400ms"/>
-    te llamamos desde This Is Art, tu barberia de confianza en Terrassa. <break time="700ms"/>
-    Tu cita esta confirmada para el ${f}, a ${horaVoz}. <break time="600ms"/>
-    El servicio es ${s}. <break time="700ms"/>
-    Muchas gracias ${n}, hasta pronto.
-  </Say>
-</Response>`;
+    console.warn('[TTS] Fallo, usando Polly.Lucia:', err.message);
+    const n = sinAcentos(nombre), s = sinAcentos(servicio), f = sinAcentos(fechaFormateada);
+    twiml = `<Response><Say voice="Polly.Lucia">Hola ${n}, te llamamos desde This Is Art. Tu cita esta confirmada para el ${f} a ${horaVoz}. Servicio: ${s}. Muchas gracias ${n}, hasta pronto.</Say></Response>`;
   }
 
   try {
     const call = await client.calls.create({
-      twiml,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to:   telefonoNorm,
+      twiml, from: process.env.TWILIO_PHONE_NUMBER, to: telefonoNorm,
     });
-    console.log('[Llamada] Iniciada OK — SID:', call.sid, '→', telefonoNorm);
+    console.log('[Llamada] OK — SID:', call.sid);
   } catch (err) {
     console.error('[Llamada] Error:', err.message);
   }
