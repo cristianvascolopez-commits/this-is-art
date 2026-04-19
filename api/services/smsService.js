@@ -20,7 +20,7 @@ function normalizarTelefono(telefono) {
 
 async function generarAudioElevenLabs(texto) {
   const apiKey  = process.env.ELEVENLABS_API_KEY;
-  const voiceId = process.env.ELEVENLABS_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL'; // Sarah — multilingual natural
+  const voiceId = process.env.ELEVENLABS_VOICE_ID || 'XrExE9yKIg1WjnnlVkGX'; // Matilda — cálida y delicada
 
   const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
     method: 'POST',
@@ -32,7 +32,7 @@ async function generarAudioElevenLabs(texto) {
     body: JSON.stringify({
       text:     texto,
       model_id: 'eleven_multilingual_v2',
-      voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0.35, use_speaker_boost: true },
+      voice_settings: { stability: 0.38, similarity_boost: 0.82, style: 0.42, use_speaker_boost: true },
     }),
   });
 
