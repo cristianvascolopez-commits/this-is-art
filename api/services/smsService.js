@@ -1,7 +1,9 @@
 const twilio      = require('twilio');
 const { randomUUID } = require('crypto');
+const ftp         = require('basic-ftp');
+const { Readable } = require('stream');
 
-// Cache temporal de audios generados (uuid → Buffer)
+// Cache temporal de audios (uuid → Buffer) — usado como fallback si FTP falla
 const audioStore = new Map();
 
 function getClient() {
@@ -39,10 +41,32 @@ async function generarAudioElevenLabs(texto) {
   if (!res.ok) throw new Error(`ElevenLabs ${res.status}: ${await res.text()}`);
 
   const buffer = Buffer.from(await res.arrayBuffer());
-  const id = randomUUID();
-  audioStore.set(id, buffer);
-  setTimeout(() => audioStore.delete(id), 5 * 60 * 1000); // limpieza a los 5 min
-  return id;
+
+  // Subir a Hostinger FTP → URL pública y fiable para Twilio
+  const filename = `cita-${randomUUID()}.mp3`;
+  const client   = new ftp.Client();
+  client.ftp.verbose = false;
+  await client.access({
+    host:     '141.136.39.88',
+    user:     'u352984932',
+    password: 'Aa8812047616..',
+    secure:   false,
+  });
+  const stream = Readable.from(buffer);
+  await client.uploadFrom(stream, `/domains/criped.es/public_html/audio/${filename}`);
+  client.close();
+
+  // Limpiar el archivo de Hostinger tras 10 min (fire and forget)
+  setTimeout(async () => {
+    try {
+      const c = new ftp.Client();
+      await c.access({ host:'141.136.39.88', user:'u352984932', password:'Aa8812047616..', secure:false });
+      await c.remove(`/domains/criped.es/public_html/audio/${filename}`);
+      c.close();
+    } catch (_) {}
+  }, 10 * 60 * 1000);
+
+  return `https://criped.es/audio/${filename}`;
 }
 
 async function sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono }) {
@@ -104,13 +128,9 @@ Muchas gracias, ${nombre}. ¡Te esperamos con los brazos abiertos!`;
 
   try {
     if (!process.env.ELEVENLABS_API_KEY) throw new Error('Sin API key');
-    const audioId  = await generarAudioElevenLabs(textoVoz);
-    const baseUrl  = process.env.RAILWAY_PUBLIC_DOMAIN
-      ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
-      : 'https://this-is-art-app-production.up.railway.app';
-    const audioUrl = `${baseUrl}/api/twiml/audio/${audioId}`;
+    const audioUrl = await generarAudioElevenLabs(textoVoz);
     twiml = `<Response><Play>${audioUrl}</Play></Response>`;
-    console.log('[ElevenLabs] Audio generado → URL:', audioUrl);
+    console.log('[ElevenLabs] Audio listo → URL:', audioUrl);
   } catch (err) {
     console.warn('[ElevenLabs] Fallo, usando Polly.Lucia:', err.message);
     const n = sinAcentos(nombre);
