@@ -8,6 +8,8 @@ const { appendCita }          = require('../services/sheetsService');
 /* POST /api/calendar/create — Crear una cita manualmente */
 router.post('/create', async (req, res) => {
   const { nombre, servicio, fecha, hora, telefono, email } = req.body;
+  const barberos = ['Bryan Referovic', 'Marc Balsera', 'David Fernández', 'Nico Cortez', ''];
+  const barbero  = barberos.includes(req.body.barbero) ? req.body.barbero : '';
 
   if (!nombre || !servicio || !fecha || !hora) {
     return res.status(400).json({
@@ -31,7 +33,7 @@ router.post('/create', async (req, res) => {
     sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono })
       .catch(err => console.warn('[SMS] No se pudo enviar:', err.message));
 
-    const ticket = await appendCita({ nombre, telefono, servicio, fecha, hora, barbero: req.body.barbero || '', emailCliente: email || '' })
+    const ticket = await appendCita({ nombre, telefono, servicio, fecha, hora, barbero, emailCliente: email || '' })
       .catch(() => null);
 
     return res.json({

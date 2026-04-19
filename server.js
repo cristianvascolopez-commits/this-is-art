@@ -46,6 +46,16 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+// Rate limit estricto para captación de leads (5 por IP cada 10 min)
+const leadsLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiados intentos. Inténtalo más tarde.' },
+});
+app.use('/api/leads/', leadsLimiter);
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/chat', chatRoutes);

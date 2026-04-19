@@ -6,7 +6,7 @@ const { appendLead }      = require('../services/sheetsService');
 /* POST /api/leads/email — Capturar email lead magnet */
 router.post('/email', async (req, res) => {
   const { email } = req.body;
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!email || typeof email !== 'string' || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return res.status(400).json({ error: 'Email inválido' });
   }
 
