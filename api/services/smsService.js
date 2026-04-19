@@ -1,4 +1,8 @@
-const twilio = require('twilio');
+const twilio      = require('twilio');
+const { randomUUID } = require('crypto');
+
+// Cache temporal de audios generados (uuid → Buffer)
+const audioStore = new Map();
 
 function getClient() {
   return twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
@@ -14,12 +18,38 @@ function normalizarTelefono(telefono) {
   return t;
 }
 
+async function generarAudioElevenLabs(texto) {
+  const apiKey  = process.env.ELEVENLABS_API_KEY;
+  const voiceId = process.env.ELEVENLABS_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL'; // Sarah — multilingual natural
+
+  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+    method: 'POST',
+    headers: {
+      'xi-api-key':   apiKey,
+      'Content-Type': 'application/json',
+      'Accept':       'audio/mpeg',
+    },
+    body: JSON.stringify({
+      text:     texto,
+      model_id: 'eleven_multilingual_v2',
+      voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0.35, use_speaker_boost: true },
+    }),
+  });
+
+  if (!res.ok) throw new Error(`ElevenLabs ${res.status}: ${await res.text()}`);
+
+  const buffer = Buffer.from(await res.arrayBuffer());
+  const id = randomUUID();
+  audioStore.set(id, buffer);
+  setTimeout(() => audioStore.delete(id), 5 * 60 * 1000); // limpieza a los 5 min
+  return id;
+}
+
 async function sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono }) {
   if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN || !process.env.TWILIO_PHONE_NUMBER) {
     console.warn('[Twilio] Variables no configuradas');
     return;
   }
-
   if (!telefono) {
     console.warn('[Twilio] No hay teléfono del cliente');
     return;
@@ -57,25 +87,45 @@ Para cambios llama al 93 189 40 78.
     console.error('[SMS] Error:', err.message);
   }
 
-  // Llamada de voz — Polly.Lucia (neural española, natural con SSML)
-  const [h, m]  = hora.split(':');
+  // Llamada de voz con ElevenLabs (IA natural) → fallback a Polly.Lucia
+  const [h, m] = hora.split(':');
   const horaVoz = m === '00' ? `las ${h} en punto` : `las ${h} y ${m}`;
 
-  const n = sinAcentos(nombre);
-  const s = sinAcentos(servicio);
-  const f = sinAcentos(fechaFormateada);
+  const textoVoz =
+`¡Hola, ${nombre}! Te llamamos desde This Is Art, tu barbería de confianza aquí en Terrassa.
 
-  const twiml = `<Response>
+Queremos confirmarte que tienes una cita reservada para el ${fechaFormateada}, a ${horaVoz}. El servicio que has elegido es ${servicio}.
+
+Nos encontramos en el Carrer de Volta, número ochenta y dos. Si necesitas hacer algún cambio o cancelar tu cita, llámanos al noventa y tres, ciento ochenta y nueve, cuarenta, setenta y ocho. Estaremos encantados de ayudarte.
+
+Muchas gracias, ${nombre}. ¡Te esperamos con los brazos abiertos!`;
+
+  let twiml;
+
+  try {
+    if (!process.env.ELEVENLABS_API_KEY) throw new Error('Sin API key');
+    const audioId  = await generarAudioElevenLabs(textoVoz);
+    const baseUrl  = process.env.RAILWAY_PUBLIC_DOMAIN
+      ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
+      : 'https://this-is-art-app-production.up.railway.app';
+    const audioUrl = `${baseUrl}/api/twiml/audio/${audioId}`;
+    twiml = `<Response><Play>${audioUrl}</Play></Response>`;
+    console.log('[ElevenLabs] Audio generado → URL:', audioUrl);
+  } catch (err) {
+    console.warn('[ElevenLabs] Fallo, usando Polly.Lucia:', err.message);
+    const n = sinAcentos(nombre);
+    const s = sinAcentos(servicio);
+    const f = sinAcentos(fechaFormateada);
+    twiml = `<Response>
   <Say voice="Polly.Lucia">
     Hola ${n}, <break time="400ms"/>
     te llamamos desde This Is Art, tu barberia de confianza en Terrassa. <break time="700ms"/>
-    Queremos confirmarte que tu cita esta reservada para el ${f}, <break time="300ms"/> a ${horaVoz}. <break time="600ms"/>
-    El servicio que has elegido es ${s}. <break time="700ms"/>
-    Nos encontramos en el Carrer de Volta, numero ochenta y dos, en Terrassa. <break time="500ms"/>
-    Si necesitas modificar o cancelar tu cita, <break time="200ms"/> puedes llamarnos al noventa y tres, <break time="200ms"/> ciento ochenta y nueve, <break time="200ms"/> cuarenta, <break time="200ms"/> setenta y ocho. <break time="700ms"/>
-    Muchas gracias ${n}, <break time="300ms"/> esperamos verte pronto. <break time="400ms"/> Hasta luego.
+    Tu cita esta confirmada para el ${f}, a ${horaVoz}. <break time="600ms"/>
+    El servicio es ${s}. <break time="700ms"/>
+    Muchas gracias ${n}, hasta pronto.
   </Say>
 </Response>`;
+  }
 
   try {
     const call = await client.calls.create({
@@ -89,4 +139,4 @@ Para cambios llama al 93 189 40 78.
   }
 }
 
-module.exports = { sendSmsConfirmation };
+module.exports = { sendSmsConfirmation, audioStore };
