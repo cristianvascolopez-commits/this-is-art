@@ -10,12 +10,12 @@
   <title>THIS IS ART – Barbería · Terrassa</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="shortcut icon" href="/favicon.svg">
-  <link rel="stylesheet" href="/css/variables.css?v=13">
-  <link rel="stylesheet" href="/css/reset.css?v=13">
-  <link rel="stylesheet" href="/css/main.css?v=13">
-  <link rel="stylesheet" href="/css/animations.css?v=13">
-  <link rel="stylesheet" href="/css/chat.css?v=13">
-  <link rel="stylesheet" href="/css/booking.css?v=13">
+  <link rel="stylesheet" href="/css/variables.css?v=14">
+  <link rel="stylesheet" href="/css/reset.css?v=14">
+  <link rel="stylesheet" href="/css/main.css?v=14">
+  <link rel="stylesheet" href="/css/animations.css?v=14">
+  <link rel="stylesheet" href="/css/chat.css?v=14">
+  <link rel="stylesheet" href="/css/booking.css?v=14">
 </head>
 <body>
 
@@ -907,9 +907,9 @@
     </div>
   </div>
 
-  <script src="/js/app.js?v=13"></script>
-  <script src="/js/chat.js?v=13"></script>
-  <script src="/js/booking.js?v=13"></script>
+  <script src="/js/app.js?v=14"></script>
+  <script src="/js/chat.js?v=14"></script>
+  <script src="/js/booking.js?v=14"></script>
   <script>
     /* ===== LEAD MAGNET POPUP ===== */
     (function() {
@@ -948,7 +948,7 @@
       btn.textContent = 'Enviando...';
 
       try {
-        var res = await fetch('https://TU_BACKEND_URL/api/leads/email', {
+        var res = await fetch('https://this-is-art-app-production.up.railway.app/api/leads/email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email })
