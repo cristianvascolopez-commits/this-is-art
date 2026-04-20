@@ -106,6 +106,17 @@ async function sendConfirmation({ nombre, servicio, fecha, hora, telefono, email
       </p>
     </div>
 
+    <!-- Descuento especial -->
+    <div style="margin:0 40px 28px;background:#141414;border:1px solid #222;border-radius:12px;padding:20px;text-align:center;">
+      <p style="margin:0 0 14px;font-size:0.7rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#666;">Tu descuento especial</p>
+      <p style="margin:0 0 8px;font-size:0.9rem;color:#ddd;">¡Gracias por elegirnos! Para tu próxima visita, usa este código:</p>
+      <div style="background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:16px;margin:16px 0;">
+        <p style="font-size:1.8rem;font-weight:900;letter-spacing:0.15em;color:#fff;margin:0;">PRIMERA10</p>
+        <p style="color:#888;font-size:0.8rem;margin:8px 0 0;">10% de descuento en servicios</p>
+      </div>
+      <p style="margin:0;font-size:0.85rem;color:#aaa;">Menciona este código al reservar. ¡Te esperamos pronto!</p>
+    </div>
+
     <!-- Nota cambio de cita -->
     <div style="margin:0 40px 28px;padding:16px 20px;background:#161616;border-left:3px solid #333;border-radius:4px;">
       <p style="margin:0;font-size:0.85rem;color:#888;line-height:1.6;">
