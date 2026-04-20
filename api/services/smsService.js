@@ -48,8 +48,8 @@ async function generarAudioYSubir(texto) {
   const ftpClient = new ftp.Client();
   ftpClient.ftp.verbose = false;
   await ftpClient.access({
-    host: '141.136.39.88', user: 'u352984932',
-    password: 'Aa8812047616..', secure: false,
+    host: process.env.FTP_HOST, user: process.env.FTP_USER,
+    password: process.env.FTP_PASSWORD, secure: false,
   });
   await ftpClient.uploadFrom(Readable.from(buffer),
     `/domains/criped.es/public_html/audio/${filename}`);
@@ -65,7 +65,7 @@ async function generarAudioYSubir(texto) {
     } catch (_) {}
   }, 10 * 60 * 1000);
 
-  return `https://criped.es/audio/${filename}`;
+  return `${process.env.FRONTEND_URL}/audio/${filename}`;
 }
 
 async function sendSmsConfirmation({ nombre, servicio, fecha, hora, telefono }) {

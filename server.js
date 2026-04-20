@@ -26,13 +26,13 @@ app.use(helmet({
       fontSrc: ["'self'", "fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "*.googleapis.com", "*.gstatic.com", "*.google.com", "*.instagram.com", "*.cdninstagram.com"],
       frameSrc: ["'self'", "*.google.com"],
-      connectSrc: ["'self'", "https://this-is-art-app-production.up.railway.app"],
+      connectSrc: ["'self'", "https://TU_BACKEND_URL"],
     },
   },
 }));
 
 app.use(cors({
-  origin: ['https://criped.es', 'https://www.criped.es', 'http://localhost:3000'],
+  origin: ['https://TU_DOMINIO', 'https://www.TU_DOMINIO', 'http://localhost:3000'],
   credentials: true,
 }));
 app.use(express.json({ limit: '1mb' }));
