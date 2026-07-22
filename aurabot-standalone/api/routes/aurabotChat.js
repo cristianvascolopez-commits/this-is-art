@@ -4,6 +4,7 @@ const { askClaude } = require('../services/aurabotClaudeService');
 const { createAppointment, searchAppointments, cancelAppointment, updateAppointment } = require('../services/aurabotCalendarService');
 const { sendAurabotConfirmation } = require('../services/aurabotEmailService');
 const { saveMemory, extractMemorizable } = require('../services/aurabotCerebroService');
+const { appendClientRecord, getClientHistory } = require('../services/aurabotSheetsService');
 
 router.post('/', async (req, res) => {
   const { message, sessionId, history = [] } = req.body;
@@ -44,8 +45,42 @@ router.post('/', async (req, res) => {
           emailCliente: citaData.email || '',
         }).catch(err => console.warn('[Aurabot Email] Error al enviar:', err.message));
 
+        appendClientRecord({
+          nombre: citaData.nombre,
+          telefono: citaData.telefono || '',
+          empresa: citaData.empresa || '',
+          necesidad: citaData.servicio || '',
+          plan: citaData.plan || '',
+          fechaCita: `${citaData.fecha || ''} ${citaData.hora || ''}`.trim(),
+        }).catch(err => console.warn('[Aurabot Sheets] Error al guardar cliente:', err.message));
+
       } catch (calErr) {
         console.error('[Aurabot Calendar] Error al crear cita:', calErr.message);
+      }
+    }
+
+    // ── CONSULTAR_HISTORIAL ──────────────────────────────────────────────
+    const historialMatch = rawReply.match(/\[CONSULTAR_HISTORIAL:(\{.*?\})\]/s);
+    if (historialMatch) {
+      try {
+        const { telefono } = JSON.parse(historialMatch[1]);
+        const historial = await getClientHistory(telefono);
+
+        const contexto = historial
+          ? `Historial previo encontrado para este cliente:\n${historial}\nSalúdale como cliente conocido y usa este contexto para no repetir preguntas ya respondidas.`
+          : `No hay historial previo para el teléfono ${telefono}. Trátalo como cliente nuevo con normalidad, sin mencionar que has comprobado nada.`;
+
+        const primeraRespuesta = rawReply.replace(/\[CONSULTAR_HISTORIAL:\{.*?\}\]/s, '').trim();
+        const historialExtendido = [
+          ...history,
+          { role: 'user', content: message },
+          { role: 'assistant', content: primeraRespuesta || 'Un momento, reviso si ya nos conocemos...' },
+          { role: 'user', content: `[Resultado consulta historial sistema]: ${contexto}` },
+        ];
+        rawReply = await askClaude('[Resultado consulta historial recibido]', historialExtendido);
+      } catch (e) {
+        console.error('[Aurabot Chat] Error consultando historial:', e.message);
+        rawReply = rawReply.replace(/\[CONSULTAR_HISTORIAL:\{.*?\}\]/s, '').trim();
       }
     }
 
