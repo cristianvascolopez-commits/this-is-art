@@ -59,7 +59,6 @@ router.post('/', async (req, res) => {
       } catch (calErr) {
         console.error('[Aurabot Calendar] Error al crear cita:', calErr.message);
         contexto = 'Hubo un error al crear la cita en el sistema. Discúlpate con el cliente y pídele que llame directamente al +34 941 682 234 o escriba a soporte@aurabotbcn.es para agendar.';
-        global.__lastCalErr = calErr.message;
       }
 
       const primeraRespuesta = rawReply.replace(/\[CITA:\{.*?\}\]/s, '').trim();

@@ -34,10 +34,6 @@ app.get('/', (req, res) => {
   res.json({ status: 'ok', service: 'aurabot-chat' });
 });
 
-app.get('/debug-last-error', (req, res) => {
-  res.json({ lastCalErr: global.__lastCalErr || null });
-});
-
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);
   res.status(500).json({ error: 'Error interno del servidor' });
