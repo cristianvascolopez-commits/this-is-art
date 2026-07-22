@@ -152,12 +152,8 @@ router.post('/', async (req, res) => {
     });
 
   } catch (err) {
-    console.error('[Aurabot Chat] Error:', err.message, err.cause);
-    return res.status(500).json({
-      error: 'Error procesando tu mensaje. Por favor inténtalo de nuevo.',
-      debug: err.message,
-      debugCause: err.cause ? String(err.cause) + ' | ' + (err.cause.code || '') : null,
-    });
+    console.error('[Aurabot Chat] Error:', err.message);
+    return res.status(500).json({ error: 'Error procesando tu mensaje. Por favor inténtalo de nuevo.' });
   }
 });
 
