@@ -10,6 +10,7 @@ const calendarRoutes = require('./api/routes/calendar');
 const cerebroRoutes = require('./api/routes/cerebro');
 const twimlRoutes = require('./api/routes/twiml');
 const leadsRoutes = require('./api/routes/leads');
+const aurabotChatRoutes = require('./api/routes/aurabotChat');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,7 +33,7 @@ app.use(helmet({
 }));
 
 app.use(cors({
-  origin: ['https://criped.es', 'https://www.criped.es', 'https://thisisart.es', 'https://www.thisisart.es', 'http://localhost:3000'],
+  origin: ['https://criped.es', 'https://www.criped.es', 'https://thisisart.es', 'https://www.thisisart.es', 'https://aurabotbcn.es', 'https://www.aurabotbcn.es', 'http://localhost:3000'],
   credentials: true,
 }));
 app.use(express.json({ limit: '1mb' }));
@@ -63,6 +64,7 @@ app.use('/api/calendar', calendarRoutes);
 app.use('/api/cerebro', cerebroRoutes);
 app.use('/api/twiml', twimlRoutes);
 app.use('/api/leads', leadsRoutes);
+app.use('/api/aurabot-chat', aurabotChatRoutes);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
