@@ -3,6 +3,7 @@ const router = express.Router();
 const { askClaude } = require('../services/aurabotClaudeService');
 const { createAppointment, searchAppointments, cancelAppointment, updateAppointment } = require('../services/aurabotCalendarService');
 const { sendAurabotConfirmation } = require('../services/aurabotEmailService');
+const { saveMemory, extractMemorizable } = require('../services/aurabotCerebroService');
 
 router.post('/', async (req, res) => {
   const { message, sessionId, history = [] } = req.body;
@@ -16,6 +17,11 @@ router.post('/', async (req, res) => {
   }
 
   try {
+    const toMemorize = extractMemorizable(message);
+    if (toMemorize && sessionId) {
+      saveMemory(toMemorize, sessionId);
+    }
+
     let rawReply = await askClaude(message, history);
 
     // ── CITA ─────────────────────────────────────────────────────────────
