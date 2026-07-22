@@ -1,0 +1,22 @@
+{
+  "name": "aurabot-chat",
+  "version": "1.0.0",
+  "description": "Backend independiente del chat de Aurabot (chat + agenda real Google Calendar)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.36.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "googleapis": "^144.0.0",
+    "helmet": "^8.0.0",
+    "nodemailer": "^8.0.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
