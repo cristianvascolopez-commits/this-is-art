@@ -85,7 +85,7 @@ async function sendAurabotConfirmation({ nombre, empresa, servicio, fecha, hora,
   const promises = [
     transporter.sendMail({
       from: `"Aurabot" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER,
+      to: 'soporte@aurabotbcn.es',
       subject: `🤖 Nueva llamada agendada — ${nombre} · ${fechaFormateada} ${hora}`,
       html: htmlEquipo,
     }),

@@ -30,6 +30,7 @@ router.post('/', async (req, res) => {
     let calendarResult = null;
 
     if (citaMatch) {
+      let contexto;
       try {
         const citaData = JSON.parse(citaMatch[1]);
         calendarResult = await createAppointment(citaData);
@@ -54,9 +55,20 @@ router.post('/', async (req, res) => {
           fechaCita: `${citaData.fecha || ''} ${citaData.hora || ''}`.trim(),
         }).catch(err => console.warn('[Aurabot Sheets] Error al guardar cliente:', err.message));
 
+        contexto = `Cita creada correctamente en la agenda para ${citaData.nombre} el ${citaData.fecha} a las ${citaData.hora} (servicio: ${citaData.servicio}). Confirma esto al cliente de forma cálida y natural, agradeciéndole. ${citaData.email ? 'Recibirá un email de confirmación en ' + citaData.email + '.' : 'No dio email, así que no menciones que recibirá confirmación por correo.'} No menciones SMS, no existe ese sistema.`;
       } catch (calErr) {
         console.error('[Aurabot Calendar] Error al crear cita:', calErr.message);
+        contexto = 'Hubo un error al crear la cita en el sistema. Discúlpate con el cliente y pídele que llame directamente al +34 941 682 234 o escriba a soporte@aurabotbcn.es para agendar.';
       }
+
+      const primeraRespuesta = rawReply.replace(/\[CITA:\{.*?\}\]/s, '').trim();
+      const historialExtendido = [
+        ...history,
+        { role: 'user', content: message },
+        { role: 'assistant', content: primeraRespuesta || 'Un momento, estoy agendando tu cita...' },
+        { role: 'user', content: `[Resultado creación cita sistema]: ${contexto}` },
+      ];
+      rawReply = await askClaude('[Resultado creación cita recibido]', historialExtendido);
     }
 
     // ── CONSULTAR_HISTORIAL ──────────────────────────────────────────────
